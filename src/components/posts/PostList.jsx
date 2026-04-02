@@ -7,7 +7,7 @@ import Skeleton from "../common/Skeleton";
 function PostList() {
   const dispatch = useDispatch();
   const { items, loading, nextCursor, hasMore } = useSelector(
-    (state) => state.posts,
+    (state) => state.posts
   );
 
   useEffect(() => {
@@ -16,21 +16,17 @@ function PostList() {
 
   const loadMore = useCallback(() => {
     if (!hasMore || loading || !nextCursor) return;
-    dispatch(fetchPosts(nextCursor));
+    dispatch(fetchPosts({ cursor: nextCursor }));
   }, [dispatch, hasMore, loading, nextCursor]);
 
   useEffect(() => {
-    const onScroll = (e) => {
-      const el = e.target;
-      const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 200;
-      if (nearBottom) {
-        loadMore();
-      }
+    const onScroll = () => {
+      const nearBottom =
+        window.innerHeight + window.scrollY >= document.body.scrollHeight - 200;
+      if (nearBottom) loadMore();
     };
-
-    const feedEl = document.getElementById("feed-scroll");
-    feedEl?.addEventListener("scroll", onScroll);
-    return () => feedEl?.removeEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, [loadMore]);
 
   return (

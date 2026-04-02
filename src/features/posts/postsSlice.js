@@ -12,7 +12,7 @@ import {
 
 const initialState = {
   items: [],
-  currentPage: 1,
+  nextCursor: null,
   hasMore: true,
   loading: false,
   creating: false,
@@ -43,17 +43,11 @@ const postsSlice = createSlice({
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.loading = false;
-        const posts = action.payload.posts || [];
-        const { pagination } = action.payload;
-        const isFirstPage =
-          !action.meta.arg?.page || action.meta.arg.page === 1;
-        state.items = isFirstPage
-          ? [...posts].sort(
-              (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
-            )
-          : [...state.items, ...posts];
-        state.currentPage = pagination?.page ?? 1;
-        state.hasMore = pagination ? pagination.page < pagination.pages : false;
+        const { posts, nextCursor } = action.payload;
+        const isFirstPage = !action.meta.arg?.cursor;
+        state.items = isFirstPage ? posts : [...state.items, ...posts];
+        state.nextCursor = nextCursor;
+        state.hasMore = nextCursor !== null;
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.loading = false;
@@ -79,7 +73,7 @@ const postsSlice = createSlice({
         if (post._count) {
           post._count.likes = Math.max(
             0,
-            (post._count.likes || 0) + (liked ? 1 : -1),
+            (post._count.likes || 0) + (liked ? 1 : -1)
           );
         }
       })
@@ -103,7 +97,7 @@ const postsSlice = createSlice({
           !action.meta.arg?.page || action.meta.arg.page === 1;
         state.items = isFirstPage
           ? [...posts].sort(
-              (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+              (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
             )
           : [...state.items, ...posts];
         state.currentPage = pagination?.page ?? 1;

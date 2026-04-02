@@ -4,76 +4,92 @@ import { ENDPOINT } from "../../services/httpEndpoint";
 import { apiExecutor } from "../../services/apiExecutor";
 import { PAGINATION_LIMIT } from "../../utils/constants";
 
-// ✅ Fetch public feed with page-based pagination
+// Normalize a post from the API shape to the UI shape:
+// API returns `user { firstName, lastName }` → UI expects `author { name }`
+const normalizePost = (post) => ({
+  ...post,
+  author: post.user
+    ? {
+        id: post.user.id,
+        name: [post.user.firstName, post.user.lastName]
+          .filter(Boolean)
+          .join(" "),
+        avatarUrl: post.user.avatarUrl || null,
+      }
+    : null,
+  likedByMe: post.likedByMe ?? false,
+});
+
+// ✅ Fetch public feed — cursor-based pagination
 export const fetchPosts = createAsyncThunk(
   "posts/fetchPosts",
   async (
-    { page = 1, limit = PAGINATION_LIMIT } = {},
-    { rejectWithValue, signal },
+    { cursor, limit = PAGINATION_LIMIT } = {},
+    { rejectWithValue, signal }
   ) =>
     apiExecutor(
       async () => {
         const response = await GET(
           ENDPOINT.POSTS.LIST,
-          { page, limit },
-          signal,
+          { cursor, limit },
+          signal
         );
         return {
-          posts: response.data.data,
-          pagination: response.data.pagination,
+          posts: (response.data.data ?? []).map(normalizePost),
+          nextCursor: response.data.nextCursor ?? null,
         };
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
-// ✅ Fetch authenticated user's own feed
+// ✅ Fetch authenticated user's own feed — page-based pagination
 export const fetchMyFeed = createAsyncThunk(
   "posts/fetchMyFeed",
   async (
     { page = 1, limit = PAGINATION_LIMIT } = {},
-    { rejectWithValue, signal },
+    { rejectWithValue, signal }
   ) =>
     apiExecutor(
       async () => {
         const response = await GET(
           ENDPOINT.POSTS.MY_FEED,
           { page, limit },
-          signal,
+          signal
         );
         return {
-          posts: response.data.data,
+          posts: (response.data.data ?? []).map(normalizePost),
           pagination: response.data.pagination,
         };
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
-// ✅ Fetch posts by a specific user
+// ✅ Fetch posts by a specific user — page-based pagination
 export const fetchUserPosts = createAsyncThunk(
   "posts/fetchUserPosts",
   async (
     { userId, page = 1, limit = PAGINATION_LIMIT },
-    { rejectWithValue, signal },
+    { rejectWithValue, signal }
   ) =>
     apiExecutor(
       async () => {
         const response = await GET(
           ENDPOINT.POSTS.BY_USER(userId),
           { page, limit },
-          signal,
+          signal
         );
         return {
-          posts: response.data.data,
+          posts: (response.data.data ?? []).map(normalizePost),
           pagination: response.data.pagination,
         };
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
 // ✅ Fetch a single post by ID
@@ -85,13 +101,13 @@ export const fetchPostById = createAsyncThunk(
         const response = await GET(
           ENDPOINT.POSTS.GET(postId),
           undefined,
-          signal,
+          signal
         );
-        return response.data.data;
+        return normalizePost(response.data.data);
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
 // ✅ Create a new post
@@ -99,7 +115,7 @@ export const createPost = createAsyncThunk(
   "posts/createPost",
   async (
     { content, visibility = "PUBLIC", image },
-    { rejectWithValue, signal },
+    { rejectWithValue, signal }
   ) =>
     apiExecutor(
       async () => {
@@ -108,11 +124,11 @@ export const createPost = createAsyncThunk(
         formData.append("visibility", visibility);
         if (image) formData.append("image", image);
         const response = await POST(ENDPOINT.POSTS.CREATE, formData, signal);
-        return response.data.data;
+        return normalizePost(response.data.data);
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
 // ✅ Update a post
@@ -120,20 +136,20 @@ export const updatePost = createAsyncThunk(
   "posts/updatePost",
   async (
     { postId, content, visibility, imageUrl },
-    { rejectWithValue, signal },
+    { rejectWithValue, signal }
   ) =>
     apiExecutor(
       async () => {
         const response = await PUT(
           ENDPOINT.POSTS.UPDATE(postId),
           { content, visibility, imageUrl },
-          signal,
+          signal
         );
-        return response.data.data;
+        return normalizePost(response.data.data);
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
 // ✅ Delete a post
@@ -146,8 +162,8 @@ export const deletePost = createAsyncThunk(
         return postId;
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
 // ✅ Toggle like on a post
@@ -159,11 +175,14 @@ export const togglePostLike = createAsyncThunk(
         const response = await POST(
           ENDPOINT.LIKES.TOGGLE_POST(postId),
           undefined,
-          signal,
+          signal
         );
-        return { postId, liked: response.data.data.liked };
+        return {
+          postId,
+          liked: response.data.data?.action === "liked",
+        };
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
