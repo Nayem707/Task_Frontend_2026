@@ -2,7 +2,7 @@ import React from "react";
 
 const RightSidebar = () => {
   return (
-    <div className="hidden lg:block space-y-4">
+    <div className="space-y-4">
       {/* You Might Like */}
       <section className="app-card px-6 py-6">
         <div className="mb-6 flex items-center justify-between">
@@ -74,7 +74,7 @@ const RightSidebar = () => {
           />
         </div>
         {/* Friends list */}
-        <ul className="space-y-3">
+        <ul className="space-y-6">
           {[
             {
               img: "people1.png",

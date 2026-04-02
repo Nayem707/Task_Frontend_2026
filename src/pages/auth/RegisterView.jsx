@@ -1,13 +1,17 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { ROUTES } from "../../utils/constants";
 import { emailPattern, passwordRules } from "../../utils/validators";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
+import { register as registerUser } from "../../features/auth/authAPI";
 
 function RegisterView() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.auth);
 
   const {
     register,
@@ -23,9 +27,14 @@ function RegisterView() {
     },
   });
 
-  const onSubmit = async () => {
-    toast.success("Account created");
-    navigate(ROUTES.FEED, { replace: true });
+  const onSubmit = async ({ email, password }) => {
+    try {
+      await dispatch(registerUser({ email, password })).unwrap();
+      toast.success("Account created");
+      navigate(ROUTES.FEED, { replace: true });
+    } catch (error) {
+      toast.error(error || "Registration failed.");
+    }
   };
 
   return (
@@ -116,8 +125,8 @@ function RegisterView() {
                 You must agree to continue.
               </p>
             ) : null}
-            <Button type="submit" className="h-11 w-full">
-              Create account
+            <Button type="submit" className="h-11 w-full" disabled={loading}>
+              {loading ? "Creating account…" : "Create account"}
             </Button>
           </form>
 

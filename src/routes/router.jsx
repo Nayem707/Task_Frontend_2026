@@ -1,6 +1,7 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
   Route,
 } from "react-router-dom";
 
@@ -15,6 +16,8 @@ import FeedLayout from "../components/layout/feed/FeedLayout";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
+      <Route path="/" element={<Navigate to="/feed" replace />} />
+
       <Route element={<PublicGuard />}>
         <Route path="/login" element={<LoginView />} />
         <Route path="/register" element={<RegisterView />} />

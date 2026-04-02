@@ -1,3 +1,5 @@
+import { useSelector } from "react-redux";
+
 export const useAuth = () => {
-  return {};
+  return useSelector((state) => state.auth);
 };

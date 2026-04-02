@@ -1,14 +1,18 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { ROUTES } from "../../utils/constants";
 import { emailPattern, passwordRules } from "../../utils/validators";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
+import { login } from "../../features/auth/authAPI";
 
 function LoginView() {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.auth);
   const from = location.state?.from?.pathname || ROUTES.FEED;
 
   const {
@@ -19,9 +23,14 @@ function LoginView() {
     defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = async () => {
-    toast.success("Logged in successfully");
-    navigate(from, { replace: true });
+  const onSubmit = async (data) => {
+    try {
+      await dispatch(login(data)).unwrap();
+      toast.success("Logged in successfully");
+      navigate(from, { replace: true });
+    } catch (error) {
+      toast.error(error || "Login failed.");
+    }
   };
 
   return (
@@ -87,8 +96,8 @@ function LoginView() {
               {...register("password", passwordRules)}
             />
 
-            <Button type="submit" className="h-11 w-full">
-              Login now
+            <Button type="submit" className="h-11 w-full" disabled={loading}>
+              {loading ? "Logging in…" : "Login now"}
             </Button>
           </form>
 

@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   Search,
   Home,
@@ -11,8 +13,12 @@ import {
   LogOut,
   ChevronRight,
 } from "lucide-react";
+import { logout } from "../../../features/auth/authAPI";
+import { ROUTES } from "../../../utils/constants";
 
 function Navbar() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifyOpen, setNotifyOpen] = useState(false);
   const profileRef = useRef(null);
@@ -32,15 +38,15 @@ function Navbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-[#e7edf8] bg-white shadow-sm">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-3">
+    <header className="sticky top-0 z-30 border-b border-[#edf0f7] bg-white shadow-xs">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 md:px-0 py-3">
         {/* Logo */}
         <a href="#" className="shrink-0">
           <img src="/images/logo.svg" alt="BuddyScript" className="h-8" />
         </a>
 
         {/* Search */}
-        <div className="mx-2 hidden flex-1 max-w-sm items-center gap-2 rounded-full bg-[#f5f7fb] px-3 py-2 lg:flex">
+        <div className="mx-2 hidden flex-1 max-w-lg items-center gap-2 rounded-full bg-[#f5f7fb] px-3 py-2 lg:flex">
           <Search size={17} className="text-gray-500" />
           <input
             type="search"
@@ -50,7 +56,7 @@ function Navbar() {
         </div>
 
         {/* Nav Icons */}
-        <div className="flex items-center gap-0.5">
+        <div className="flex items-center gap-6">
           {/* Home - active */}
           <a href="#" className="relative rounded-xl p-2.5 hover:bg-[#f0f4ff]">
             <Home size={21} className="text-[#377DFF]" />
@@ -74,15 +80,17 @@ function Navbar() {
                 6
               </span>
             </button>
+
+            {/* Notifications Dropdown */}
             {notifyOpen && (
-              <div className="absolute right-0 top-full mt-1 w-80 rounded-2xl border border-[#e7edf8] bg-white shadow-xl z-50">
+              <div className="absolute -right-54 top-full mt-3 w-100 rounded-b-xl border border-[#e7edf8] bg-white shadow-xl z-50">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-[#e7edf8]">
                   <h4 className="font-semibold text-[#112032]">
                     Notifications
                   </h4>
                 </div>
-                <div className="max-h-72 overflow-y-auto divide-y divide-[#f0f3f8]">
-                  {[1, 2, 3, 4, 5].map((i) => (
+                <div className="max-h-[80vh] overflow-y-auto divide-y divide-[#f0f3f8]">
+                  {[1, 2, 3, 4, 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].map((i) => (
                     <div
                       key={i}
                       className="flex items-start gap-3 px-4 py-3 hover:bg-[#f5f7fb] cursor-pointer"
@@ -144,9 +152,11 @@ function Navbar() {
             <ChevronDown size={14} className="text-[#112032]" />
           </div>
 
+          {/* Profile Dropdown */}
+          
           {profileOpen && (
             <div
-              className="absolute right-0 top-full mt-2 w-56 rounded-2xl border border-[#e7edf8] bg-white shadow-xl z-50 overflow-hidden"
+              className="absolute -right-10 top-full mt-3 w-56 rounded-b-xl border border-[#e7edf8] bg-white shadow-xl z-50 overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-3 px-4 py-3 border-b border-[#e7edf8]">
@@ -193,7 +203,11 @@ function Navbar() {
                 <li>
                   <button
                     type="button"
-                    onClick={() => setProfileOpen(false)}
+                    onClick={async () => {
+                      setProfileOpen(false);
+                      await dispatch(logout());
+                      navigate(ROUTES.LOGIN, { replace: true });
+                    }}
                     className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-sm text-[#4c5a71] hover:bg-[#f5f7fb]"
                   >
                     <span className="flex items-center gap-2.5">

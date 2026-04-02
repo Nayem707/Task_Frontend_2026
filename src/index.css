@@ -32,3 +32,7 @@ body {
   border: 1px solid var(--line);
   background: var(--surface);
 }
+
+button {
+  cursor: pointer;
+}

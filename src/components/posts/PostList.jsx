@@ -20,16 +20,17 @@ function PostList() {
   }, [dispatch, hasMore, loading, nextCursor]);
 
   useEffect(() => {
-    const onScroll = () => {
-      const nearBottom =
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 200;
+    const onScroll = (e) => {
+      const el = e.target;
+      const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 200;
       if (nearBottom) {
         loadMore();
       }
     };
 
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    const feedEl = document.getElementById("feed-scroll");
+    feedEl?.addEventListener("scroll", onScroll);
+    return () => feedEl?.removeEventListener("scroll", onScroll);
   }, [loadMore]);
 
   return (

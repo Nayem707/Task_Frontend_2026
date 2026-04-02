@@ -3,7 +3,7 @@ import { TOKEN_KEY } from "../utils/constants";
 import { getCookie } from "../utils/cookies";
 
 function PublicGuard() {
-  const token = false;
+  const token = getCookie(TOKEN_KEY);
 
   if (token) {
     return <Navigate to="/feed" replace />;

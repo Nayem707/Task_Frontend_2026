@@ -158,7 +158,7 @@ const suggestedPeople = [
 
 function LeftSidebar() {
   return (
-    <aside className="space-y-4">
+    <aside className="space-y-4 ">
       {/* Explore */}
       <section className="app-card px-6 py-6">
         <h3 className="mb-6 text-base font-semibold text-[#112032]">Explore</h3>
@@ -255,9 +255,13 @@ function LeftSidebar() {
               <hr className="border-[#e8ebf0]" />
               <div className="flex items-center justify-between px-3 py-2">
                 <span className="text-xs text-[#738098]">17 People Going</span>
-                <a href="#" className="text-xs font-semibold text-[#377DFF]">
+                <button
+                  type="button"
+                  className="text-xs font-semibold text-[#377DFF]"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Going
-                </a>
+                </button>
               </div>
             </div>
           </a>
