@@ -52,11 +52,10 @@ const authSlice = createSlice({
       });
 
     // Logout
-    builder
-      .addCase(logout.fulfilled, (state) => {
-        state.user = null;
-        state.isAuthenticated = false;
-      });
+    builder.addCase(logout.fulfilled, (state) => {
+      state.user = null;
+      state.isAuthenticated = false;
+    });
 
     // Get Profile
     builder

@@ -1,55 +1,114 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
+import { Mic, Smile } from "lucide-react";
 import {
   addComment,
   fetchCommentsByPost,
 } from "../../features/comments/commentsAPI";
-import Button from "../common/Button";
-import Input from "../common/Input";
 import Comment from "./Comment";
 
-function CommentList({ postId }) {
-  const dispatch = useDispatch();
-  const comments = useSelector(
-    (state) => state.comments.byPostId[postId] || [],
-  );
-  const loading = useSelector(
-    (state) => state.comments.loadingByPostId[postId],
-  );
+/* Mic icon */
+const MicIcon = () => <Mic size={16} className="text-[#9aa5b8]" />;
+
+/* Sticker / emoji icon */
+const StickerIcon = () => <Smile size={16} className="text-[#9aa5b8]" />;
+
+/* Shared comment input row used in CommentList and Comment (for replies) */
+export function CommentInputRow({
+  onSubmit: submitHandler,
+  placeholder = "Write a comment",
+  avatarSrc = "/images/profile.png",
+}) {
   const { register, handleSubmit, reset } = useForm({
     defaultValues: { content: "" },
   });
+
+  const submit = async (data) => {
+    if (!data.content.trim()) return;
+    await submitHandler(data);
+    reset();
+  };
+
+  return (
+    <form className="flex items-center gap-2.5" onSubmit={handleSubmit(submit)}>
+      <img
+        src={avatarSrc}
+        alt=""
+        className="h-9 w-9 shrink-0 rounded-full object-cover"
+        loading="lazy"
+      />
+      <div className="flex flex-1 items-center gap-2 rounded-full border border-[#e7edf8] bg-[#f5f7fb] px-4 py-2">
+        <input
+          type="text"
+          placeholder={placeholder}
+          className="flex-1 bg-transparent text-sm text-[#112032] outline-none placeholder:text-[#aab4c4]"
+          {...register("content", { required: true })}
+        />
+        <button type="submit" className="sr-only">
+          Send
+        </button>
+        <button
+          type="button"
+          className="shrink-0 text-[#9aa5b8] hover:text-[#738098]"
+        >
+          <MicIcon />
+        </button>
+        <button
+          type="button"
+          className="shrink-0 text-[#9aa5b8] hover:text-[#738098]"
+        >
+          <StickerIcon />
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function CommentList({ postId, totalCount = 0 }) {
+  const dispatch = useDispatch();
+  const [showAll, setShowAll] = useState(false);
+  const comments = useSelector(
+    (state) => state.comments.byPostId[postId] || []
+  );
+  const loading = useSelector(
+    (state) => state.comments.loadingByPostId[postId]
+  );
 
   useEffect(() => {
     dispatch(fetchCommentsByPost(postId));
   }, [dispatch, postId]);
 
-  const onSubmit = async ({ content }) => {
-    if (!content.trim()) return;
+  const handleAddComment = async ({ content }) => {
     await dispatch(addComment({ postId, content })).unwrap();
-    reset();
   };
 
+  const hiddenCount = totalCount > 1 ? totalCount - 1 : comments.length - 1;
+  const visibleComments = showAll ? comments : comments.slice(-1);
+
   return (
-    <section className="mt-4 space-y-3">
-      <form className="flex gap-2" onSubmit={handleSubmit(onSubmit)}>
-        <Input
-          className="h-10"
-          placeholder="Write a comment"
-          {...register("content", { required: true })}
-        />
-        <Button type="submit" className="h-10 px-3">
-          Post
-        </Button>
-      </form>
+    <section className="my-4 space-y-4">
+      {/* Write a comment */}
+      <CommentInputRow onSubmit={handleAddComment} />
 
       {loading ? (
-        <p className="text-xs text-[#7f8aa0]">Loading comments...</p>
+        <p className="text-xs text-[#7f8aa0]">Loading comments…</p>
       ) : null}
 
-      <div className="space-y-2">
-        {comments.map((comment) => (
+      {/* View previous comments toggle */}
+      {!showAll && hiddenCount > 0 ? (
+        <button
+          type="button"
+          onClick={() => setShowAll(true)}
+          className="text-sm font-medium text-[#738098] hover:text-[#112032]"
+        >
+          View {hiddenCount} previous comment{hiddenCount !== 1 ? "s" : ""}
+        </button>
+      ) : null}
+
+      {/* Comment list */}
+      <div className="space-y-4">
+        {visibleComments.map((comment) => (
           <Comment key={comment.id} comment={comment} postId={postId} />
         ))}
       </div>

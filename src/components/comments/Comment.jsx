@@ -1,89 +1,120 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useForm } from "react-hook-form";
 import {
   addReply,
   toggleCommentLike,
 } from "../../features/comments/commentsAPI";
-import { formatDateTime } from "../../utils/helpers";
-import Button from "../common/Button";
-import Input from "../common/Input";
-import LikeButton from "../likes/LikeButton";
+import { timeAgo } from "../../utils/helpers";
+import { CommentInputRow } from "./CommentList";
 import Reply from "./Reply";
 
 function Comment({ postId, comment }) {
   const dispatch = useDispatch();
   const [replyOpen, setReplyOpen] = useState(false);
-  const { register, handleSubmit, reset } = useForm({
-    defaultValues: { content: "" },
-  });
 
-  const onSubmit = async ({ content }) => {
-    if (!content.trim()) return;
+  const handleToggleLike = () => {
+    dispatch(toggleCommentLike({ postId, commentId: comment.id }));
+  };
+
+  const handleAddReply = async ({ content }) => {
     await dispatch(
-      addReply({ postId, parentCommentId: comment.id, content }),
+      addReply({ postId, parentCommentId: comment.id, content })
     ).unwrap();
-    reset();
     setReplyOpen(false);
   };
 
-  const handleToggleLike = async () => {
-    await dispatch(toggleCommentLike({ postId, commentId: comment.id }));
-  };
-
   return (
-    <article className="rounded-xl border border-[#edf1f7] p-3">
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <p className="text-sm font-semibold text-[#112032]">
-          {comment.author?.name || "User"}
-        </p>
-        <p className="text-xs text-[#8a95a7]">
-          {formatDateTime(comment.createdAt)}
-        </p>
-      </div>
-      <p className="mb-2 text-sm text-[#3b4658]">{comment.content}</p>
-      <div className="mb-3 flex items-center gap-3">
-        <LikeButton
-          liked={comment.likedByMe}
-          count={comment.likesCount}
-          onToggle={handleToggleLike}
-        />
-        <button
-          type="button"
-          className="text-xs font-semibold text-[#377DFF]"
-          onClick={() => setReplyOpen((state) => !state)}
-        >
-          Reply
-        </button>
-      </div>
+    <div className="flex items-start gap-3">
+      {/* Avatar */}
+      <img
+        src={comment.author?.avatarUrl || "/images/comment_img.png"}
+        alt={comment.author?.name || "User"}
+        className="h-10 w-10 shrink-0 rounded-full object-cover"
+        loading="lazy"
+      />
 
-      {replyOpen ? (
-        <form className="mb-3 flex gap-2" onSubmit={handleSubmit(onSubmit)}>
-          <Input
-            className="h-10"
-            placeholder="Write a reply"
-            {...register("content", { required: true })}
-          />
-          <Button type="submit" className="h-10 px-3">
-            Send
-          </Button>
-        </form>
-      ) : null}
+      <div className="min-w-0 flex-1">
+        {/* Bubble */}
+        <div className="relative rounded-2xl bg-[#f5f7fb] px-4 py-3">
+          <p className="mb-0.5 text-sm font-semibold text-[#112032]">
+            {comment.author?.name || "User"}
+          </p>
+          <p className="text-sm leading-snug text-[#4c5a71]">
+            {comment.content}
+          </p>
 
-      {comment.replies?.length ? (
-        <div className="space-y-2 border-l border-[#ebf0f7] pl-3">
-          {comment.replies.map((reply) => (
-            <Reply
-              key={reply.id}
-              reply={reply}
-              onToggleLike={(replyId) =>
-                dispatch(toggleCommentLike({ postId, commentId: replyId }))
-              }
-            />
-          ))}
+          {/* Reaction badge — bottom-right corner */}
+          {(comment.likesCount ?? 0) > 0 ? (
+            <div className="absolute right-3 -bottom-3.5 flex items-center gap-1 rounded-full border border-[#e7edf8] bg-white px-2 py-0.5 shadow-sm">
+              <img src="/images/react_img1.png" alt="" className="h-4 w-4" />
+              <img
+                src="/images/react_img2.png"
+                alt=""
+                className="-ml-1.5 h-4 w-4"
+              />
+              <span className="ml-0.5 text-xs text-[#738098]">
+                {comment.likesCount}
+              </span>
+            </div>
+          ) : null}
         </div>
-      ) : null}
-    </article>
+
+        {/* Actions row */}
+        <div className="mt-5 flex items-center gap-1 text-xs font-semibold text-[#738098]">
+          <button
+            type="button"
+            onClick={handleToggleLike}
+            className={`hover:text-[#112032] ${comment.likedByMe ? "text-[#377DFF]" : ""}`}
+          >
+            Like
+          </button>
+          <span>●</span>
+          <button
+            type="button"
+            onClick={() => setReplyOpen((v) => !v)}
+            className="hover:text-[#112032]"
+          >
+            {" "}
+            Reply
+          </button>
+          <span>●</span>
+          <button type="button" className="hover:text-[#112032]">
+            {" "}
+            Share
+          </button>
+          {comment.createdAt ? (
+            <span className="ml-1 font-normal text-[#9aa5b8]">
+              .{timeAgo(comment.createdAt)}
+            </span>
+          ) : null}
+        </div>
+
+        {/* Reply input */}
+        {replyOpen ? (
+          <div className="mt-3">
+            <CommentInputRow
+              onSubmit={handleAddReply}
+              placeholder="Write a comment"
+            />
+          </div>
+        ) : null}
+
+        {/* Replies */}
+        {comment.replies?.length ? (
+          <div className="mt-3 space-y-3 border-l-2 border-[#ebf0f7] pl-4">
+            {comment.replies.map((reply) => (
+              <Reply
+                key={reply.id}
+                reply={reply}
+                onToggleLike={(replyId) =>
+                  dispatch(toggleCommentLike({ postId, commentId: replyId }))
+                }
+              />
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </div>
   );
 }
 

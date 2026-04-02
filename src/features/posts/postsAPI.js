@@ -18,6 +18,8 @@ const normalizePost = (post) => ({
       }
     : null,
   likedByMe: post.likedByMe ?? false,
+  commentsCount: post._count?.comments ?? post.commentsCount ?? 0,
+  likesCount: post._count?.likes ?? post.likesCount ?? 0,
 });
 
 // ✅ Fetch public feed — cursor-based pagination
@@ -179,7 +181,7 @@ export const togglePostLike = createAsyncThunk(
         );
         return {
           postId,
-          liked: response.data.data?.action === "liked",
+          liked: response.data.data?.liked === true,
         };
       },
       rejectWithValue,

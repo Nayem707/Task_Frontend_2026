@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   Search,
@@ -19,6 +19,9 @@ import { ROUTES } from "../../../utils/constants";
 function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
+  const fullName = user ? `${user.firstName} ${user.lastName}` : "";
+  const avatarSrc = user?.avatarUrl || "/images/profile.png";
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifyOpen, setNotifyOpen] = useState(false);
   const profileRef = useRef(null);
@@ -39,14 +42,14 @@ function Navbar() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-[#edf0f7] bg-white shadow-xs">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 md:px-0 py-3">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 md:px-0">
         {/* Logo */}
         <a href="#" className="shrink-0">
           <img src="/images/logo.svg" alt="BuddyScript" className="h-8" />
         </a>
 
         {/* Search */}
-        <div className="mx-2 hidden flex-1 max-w-lg items-center gap-2 rounded-full bg-[#f5f7fb] px-3 py-2 lg:flex">
+        <div className="mx-2 hidden max-w-lg flex-1 items-center gap-2 rounded-full bg-[#f5f7fb] px-3 py-2 lg:flex">
           <Search size={17} className="text-gray-500" />
           <input
             type="search"
@@ -60,7 +63,7 @@ function Navbar() {
           {/* Home - active */}
           <a href="#" className="relative rounded-xl p-2.5 hover:bg-[#f0f4ff]">
             <Home size={21} className="text-[#377DFF]" />
-            <span className="absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 w-4 rounded-full bg-[#377DFF]" />
+            <span className="absolute bottom-1 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-[#377DFF]" />
           </a>
 
           {/* Friends */}
@@ -83,17 +86,20 @@ function Navbar() {
 
             {/* Notifications Dropdown */}
             {notifyOpen && (
-              <div className="absolute -right-54 top-full mt-3 w-100 rounded-b-xl border border-[#e7edf8] bg-white shadow-xl z-50">
-                <div className="flex items-center justify-between px-4 py-3 border-b border-[#e7edf8]">
+              <div className="absolute top-full -right-54 z-50 mt-3 w-100 rounded-b-xl border border-[#e7edf8] bg-white shadow-xl">
+                <div className="flex items-center justify-between border-b border-[#e7edf8] px-4 py-3">
                   <h4 className="font-semibold text-[#112032]">
                     Notifications
                   </h4>
                 </div>
-                <div className="max-h-[80vh] overflow-y-auto divide-y divide-[#f0f3f8]">
-                  {[1, 2, 3, 4, 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].map((i) => (
+                <div className="max-h-[80vh] divide-y divide-[#f0f3f8] overflow-y-auto">
+                  {[
+                    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+                    18, 19, 20,
+                  ].map((i) => (
                     <div
                       key={i}
-                      className="flex items-start gap-3 px-4 py-3 hover:bg-[#f5f7fb] cursor-pointer"
+                      className="flex cursor-pointer items-start gap-3 px-4 py-3 hover:bg-[#f5f7fb]"
                     >
                       <img
                         src={
@@ -105,7 +111,7 @@ function Navbar() {
                         alt=""
                       />
                       <div>
-                        <p className="text-xs text-[#4c5a71] leading-snug">
+                        <p className="text-xs leading-snug text-[#4c5a71]">
                           <span className="font-semibold text-[#112032]">
                             {i % 2 === 0 ? "Steve Jobs" : "Admin"}
                           </span>
@@ -136,38 +142,38 @@ function Navbar() {
         {/* Profile */}
         <div
           ref={profileRef}
-          className="relative flex items-center gap-2.5 cursor-pointer"
+          className="relative flex cursor-pointer items-center gap-2.5"
           onClick={() => setProfileOpen((v) => !v)}
         >
           <img
-            src="/images/profile.png"
+            src={avatarSrc}
             alt="Profile"
             className="h-10 w-10 rounded-full object-cover"
             loading="lazy"
           />
           <div className="hidden items-center gap-1 lg:flex">
             <span className="text-sm font-medium text-[#112032]">
-              Dylan Field
+              {fullName}
             </span>
             <ChevronDown size={14} className="text-[#112032]" />
           </div>
 
           {/* Profile Dropdown */}
-          
+
           {profileOpen && (
             <div
-              className="absolute -right-10 top-full mt-3 w-56 rounded-b-xl border border-[#e7edf8] bg-white shadow-xl z-50 overflow-hidden"
+              className="absolute top-full -right-10 z-50 mt-3 w-56 overflow-hidden rounded-b-xl border border-[#e7edf8] bg-white shadow-xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center gap-3 px-4 py-3 border-b border-[#e7edf8]">
+              <div className="flex items-center gap-3 border-b border-[#e7edf8] px-4 py-3">
                 <img
-                  src="/images/profile.png"
-                  className="h-10 w-10 rounded-full object-cover shrink-0"
+                  src={avatarSrc}
+                  className="h-10 w-10 shrink-0 rounded-full object-cover"
                   alt=""
                 />
                 <div>
                   <p className="text-sm font-semibold text-[#112032]">
-                    Dylan Field
+                    {fullName}
                   </p>
                   <a href="#" className="text-xs text-[#377DFF]">
                     View Profile

@@ -69,13 +69,9 @@ const postsSlice = createSlice({
         const { postId, liked } = action.payload;
         const post = state.items.find((item) => item.id === postId);
         if (!post) return;
+        // Count is already updated optimistically via patchPostLikeOptimistic.
+        // Only correct likedByMe from the server's authoritative response.
         post.likedByMe = liked;
-        if (post._count) {
-          post._count.likes = Math.max(
-            0,
-            (post._count.likes || 0) + (liked ? 1 : -1)
-          );
-        }
       })
       .addCase(deletePost.fulfilled, (state, action) => {
         state.items = state.items.filter((item) => item.id !== action.payload);
