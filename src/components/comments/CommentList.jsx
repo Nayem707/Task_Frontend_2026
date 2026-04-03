@@ -80,6 +80,8 @@ function CommentList({ postId, totalCount = 0 }) {
     (state) => state.comments.loadingByPostId[postId]
   );
 
+  const currentUser = useSelector((state) => state.auth.user);
+
   useEffect(() => {
     dispatch(fetchCommentsByPost(postId));
   }, [dispatch, postId]);
@@ -94,7 +96,10 @@ function CommentList({ postId, totalCount = 0 }) {
   return (
     <section className="my-4 space-y-4">
       {/* Write a comment */}
-      <CommentInputRow onSubmit={handleAddComment} />
+      <CommentInputRow
+        onSubmit={handleAddComment}
+        avatarSrc={currentUser?.avatarUrl || "/images/profile.png"}
+      />
 
       {loading ? (
         <p className="text-xs text-[#7f8aa0]">Loading comments…</p>

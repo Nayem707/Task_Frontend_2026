@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   addReply,
   toggleCommentLike,
@@ -12,6 +12,7 @@ import { ThumbsUp } from "lucide-react";
 function Comment({ postId, comment }) {
   const dispatch = useDispatch();
   const [replyOpen, setReplyOpen] = useState(false);
+  const currentUser = useSelector((state) => state.auth.user);
 
   const handleToggleLike = () => {
     dispatch(toggleCommentLike({ postId, commentId: comment.id }));
@@ -87,6 +88,7 @@ function Comment({ postId, comment }) {
             <CommentInputRow
               onSubmit={handleAddReply}
               placeholder="Write a comment"
+              avatarSrc={currentUser?.avatarUrl || "/images/profile.png"}
             />
           </div>
         ) : null}
