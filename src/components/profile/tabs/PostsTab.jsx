@@ -1,5 +1,6 @@
 import { Image as ImageIcon, Video } from "lucide-react";
 import PostCard from "../../posts/PostCard";
+import CreatePost from "../../posts/CreatePost";
 
 export const PostsTab = ({ posts, user, currentUser, loading }) => {
   if (loading && !posts.length) {
@@ -30,7 +31,7 @@ export const PostsTab = ({ posts, user, currentUser, loading }) => {
   return (
     <div className="space-y-4">
       {/* Create Post Box - Only show if it's own profile */}
-      <div className="rounded-xl bg-white p-4 shadow-sm">
+      {/* <div className="rounded-xl bg-white p-4 shadow-sm">
         <div className="flex items-center space-x-3">
           <img
             src={(currentUser ?? user)?.avatarUrl || "/images/profile.png"}
@@ -49,7 +50,9 @@ export const PostsTab = ({ posts, user, currentUser, loading }) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
+
+      <CreatePost />
 
       {/* Posts Feed */}
       {posts.map((post) => (

@@ -30,12 +30,12 @@ export const AboutTab = ({ user }) => {
   } = user;
 
   return (
-    <div className="space-y-4 rounded-xl bg-white p-5 shadow-sm">
+    <div className="space-y-6 rounded-xl bg-white p-5 shadow-sm">
       <h3 className="text-xl font-bold">About {firstName}</h3>
       <hr className="border-gray-200" />
 
       {/* Basic info grid (two columns on larger screens) */}
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {workplace && (
           <div className="flex items-center space-x-3 text-gray-700">
             <Briefcase className="text-gray-500" size={18} />

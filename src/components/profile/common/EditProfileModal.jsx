@@ -90,12 +90,12 @@ export function EditProfileModal({ open, onClose }) {
               <img
                 src={currentAvatar}
                 alt="Avatar preview"
-                className="h-20 w-20 rounded-full border-4 border-white object-cover shadow"
+                className="h-28 w-28 rounded-full border-4 border-white object-cover shadow"
               />
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="absolute right-0 bottom-0 flex h-7 w-7 items-center justify-center rounded-full bg-[#377DFF] text-white shadow hover:bg-blue-600"
+                className="absolute right-0 bottom-0 flex h-7 w-7 items-center justify-center rounded-full bg-[#125fee] text-white shadow hover:bg-blue-600"
               >
                 <Camera size={13} />
               </button>

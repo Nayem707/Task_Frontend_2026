@@ -16,6 +16,8 @@ import { validateImageFile } from "../../utils/validators";
 function CreatePost() {
   const dispatch = useDispatch();
   const creating = useSelector((state) => state.posts.creating);
+  const authUser = useSelector((state) => state.auth.user);
+  const avatarSrc = authUser?.avatarUrl || "/images/profile.png";
   const [preview, setPreview] = useState("");
   const fileInputRef = useRef(null);
   const {
@@ -78,7 +80,7 @@ function CreatePost() {
         {/* Textarea row */}
         <div className="mb-4 flex items-start gap-3">
           <img
-            src=" /images/profile.png"
+            src={avatarSrc}
             alt="Your avatar"
             className="h-11 w-11 shrink-0 rounded-full object-cover"
           />

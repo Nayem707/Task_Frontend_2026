@@ -146,42 +146,22 @@ const RightSidebar = () => {
         ) : filteredFollowing.length === 0 ? (
           <p className="text-xs text-[#738098]">No following users found.</p>
         ) : (
-          <ul className="space-y-6">
+          <ul className="space-y-4">
             {filteredFollowing.map((person) => (
               <li key={person.id} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <img
-                    src={person.avatarUrl}
-                    alt={person.name}
-                    className="h-9 w-9 shrink-0 rounded-full object-cover"
-                    loading="lazy"
-                  />
+                <div className="flex items-center gap-2">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200 text-lg font-semibold text-[#acb2b9]">
+                    {person.name?.charAt(0).toUpperCase() || "U"}
+                  </div>
+                  <div className="relative">
+                    <div className="absolute right-1 -bottom-3 cursor-pointer rounded-full border-2 border-white bg-green-600 p-1 transition hover:bg-gray-900" />
+                  </div>
                   <div>
                     <p className="text-sm font-semibold text-[#112032]">
                       {person.name}
                     </p>
                     <p className="text-xs text-[#738098]">{person.title}</p>
                   </div>
-                </div>
-                <div className="shrink-0">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <rect
-                      width="12"
-                      height="12"
-                      x="1"
-                      y="1"
-                      fill="#0ACF83"
-                      stroke="#fff"
-                      strokeWidth="2"
-                      rx="6"
-                    />
-                  </svg>
                 </div>
               </li>
             ))}
