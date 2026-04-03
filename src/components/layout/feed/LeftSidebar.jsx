@@ -1,3 +1,7 @@
+import { useEffect, useMemo, useState } from "react";
+import { GET, POST } from "../../../services/httpMethods";
+import { ENDPOINT } from "../../../services/httpEndpoint";
+
 const exploreItems = [
   {
     label: "Learning",
@@ -146,19 +150,70 @@ const exploreItems = [
   },
 ];
 
-const suggestedPeople = [
-  { name: "Steve Jobs", title: "CEO of Apple", image: "/images/people1.png" },
-  {
-    name: "Ryan Roslansky",
-    title: "CEO of Linkedin",
-    image: "/images/people2.png",
-  },
-  { name: "Dylan Field", title: "CEO of Figma", image: "/images/people3.png" },
-];
-
 function LeftSidebar() {
+  const [suggestedPeople, setSuggestedPeople] = useState([]);
+  const [loadingPeople, setLoadingPeople] = useState(true);
+  const [followLoadingId, setFollowLoadingId] = useState(null);
+
+  const loadSuggestedPeople = async () => {
+    try {
+      setLoadingPeople(true);
+      const response = await GET(ENDPOINT.USERS.SEARCH, {
+        page: 1,
+        limit: 6,
+      });
+      const users = response?.data?.data?.data ?? [];
+      setSuggestedPeople(
+        users
+          .filter((user) => user.isFollowing !== true)
+          .map((user) => ({
+            id: user.id,
+            name: [user.firstName, user.lastName].filter(Boolean).join(" "),
+            title: user.bio || user.email,
+            image: user.avatarUrl || "/images/profile.png",
+            isFollowing: false,
+          }))
+      );
+    } catch (error) {
+      setSuggestedPeople([]);
+      console.error("Failed to load suggested people", error);
+    } finally {
+      setLoadingPeople(false);
+    }
+  };
+
+  useEffect(() => {
+    loadSuggestedPeople();
+  }, []);
+
+  const hasPeople = useMemo(
+    () => suggestedPeople.length > 0,
+    [suggestedPeople]
+  );
+  const shouldShowSuggestedSection = loadingPeople || hasPeople;
+
+  const handleToggleFollow = async (userId) => {
+    try {
+      setFollowLoadingId(userId);
+      const response = await POST(ENDPOINT.USERS.TOGGLE_FOLLOW(userId));
+      const action = response?.data?.data?.action;
+
+      setSuggestedPeople((prev) => {
+        if (action === "followed") {
+          return prev.filter((person) => person.id !== userId);
+        }
+
+        return prev;
+      });
+    } catch (error) {
+      console.error("Failed to toggle follow", error);
+    } finally {
+      setFollowLoadingId(null);
+    }
+  };
+
   return (
-    <aside className="space-y-4 ">
+    <aside className="space-y-4">
       {/* Explore */}
       <section className="app-card px-6 py-6">
         <h3 className="mb-6 text-base font-semibold text-[#112032]">Explore</h3>
@@ -185,42 +240,47 @@ function LeftSidebar() {
       </section>
 
       {/* Suggested People */}
-      <section className="app-card px-6 py-6">
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-base font-semibold text-[#112032]">
-            Suggested People
-          </h3>
-          <a href="#" className="text-xs font-semibold text-[#377DFF]">
-            See All
-          </a>
-        </div>
-        <div className="space-y-4">
-          {suggestedPeople.map((person) => (
-            <div key={person.name} className="flex items-center gap-3">
-              <img
-                src={person.image}
-                alt={person.name}
-                className="h-10 w-10 rounded-full object-cover shrink-0"
-                loading="lazy"
-              />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-[#112032]">
-                  {person.name}
-                </p>
-                <p className="truncate text-xs text-[#7c889d]">
-                  {person.title}
-                </p>
-              </div>
-              <a
-                href="#"
-                className="shrink-0 rounded-lg border border-[#c6d4e8] px-3 py-1 text-xs font-semibold text-[#4c5a71] hover:bg-[#f3f7ff]"
-              >
-                Connect
-              </a>
-            </div>
-          ))}
-        </div>
-      </section>
+      {shouldShowSuggestedSection ? (
+        <section className="app-card px-6 py-6">
+          <div className="mb-6 flex items-center justify-between">
+            <h3 className="text-base font-semibold text-[#112032]">
+              Suggested People
+            </h3>
+            <a href="#" className="text-xs font-semibold text-[#377DFF]">
+              See All
+            </a>
+          </div>
+          <div className="space-y-4">
+            {loadingPeople ? (
+              <p className="text-xs text-[#7c889d]">Loading users...</p>
+            ) : (
+              suggestedPeople.map((person) => (
+                <div key={person.id} className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-lg font-semibold text-[#acb2b9]">
+                    {person.name?.charAt(0).toUpperCase() || "U"}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-[#112032]">
+                      {person.name}
+                    </p>
+                    <p className="truncate text-xs text-[#7c889d]">
+                      {person.title}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleToggleFollow(person.id)}
+                    disabled={followLoadingId === person.id}
+                    className="shrink-0 rounded-lg border border-[#c6d4e8] px-3 py-1 text-xs font-semibold text-[#4c5a71] hover:bg-[#f3f7ff] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {followLoadingId === person.id ? "..." : "Follow"}
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        </section>
+      ) : null}
 
       {/* Events */}
       <section className="app-card px-6 py-6">
@@ -232,7 +292,7 @@ function LeftSidebar() {
         </div>
         {[1, 2].map((i) => (
           <a key={i} href="#" className="mb-4 block last:mb-0">
-            <div className="rounded-xl border border-[#e8ebf0] overflow-hidden">
+            <div className="overflow-hidden rounded-xl border border-[#e8ebf0]">
               <img
                 src="/images/feed_event1.png"
                 alt="Event"
@@ -241,13 +301,13 @@ function LeftSidebar() {
               />
               <div className="flex items-start gap-3 px-3 py-3">
                 <div className="text-center">
-                  <p className="text-lg font-bold text-[#112032] leading-none">
+                  <p className="text-lg leading-none font-bold text-[#112032]">
                     10
                   </p>
                   <p className="text-xs text-[#738098]">Jul</p>
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-[#112032] leading-snug">
+                  <p className="text-sm leading-snug font-semibold text-[#112032]">
                     No more terrorism no more cry
                   </p>
                 </div>

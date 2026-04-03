@@ -27,6 +27,17 @@ function PostCard({ post }) {
   const likesUsers = useSelector(
     (state) => state.likes.likesByEntity[key] || []
   );
+  const imageUrls =
+    post.images?.length > 0
+      ? post.images
+          .slice()
+          .sort((left, right) => left.order - right.order)
+          .map((image) => image.url)
+      : post.imageUrl
+        ? [post.imageUrl]
+        : [];
+  const visibleImages = imageUrls.slice(0, 4);
+  const remainingImages = imageUrls.length - visibleImages.length;
 
   const handleToggleLike = async () => {
     const optimistic = !post.likedByMe;
@@ -142,15 +153,47 @@ function PostCard({ post }) {
         </p>
       </div>
 
-      {/* Image */}
-      {post.imageUrl ? (
-        <div className="mb-4">
-          <img
-            src={post.imageUrl}
-            alt="Post"
-            className="max-h-110 w-full object-contain"
-            loading="lazy"
-          />
+      {/* Images */}
+      {imageUrls.length > 0 ? (
+        <div
+          className={`mb-4 grid gap-1 overflow-hidden bg-[#f4f6fa] ${
+            imageUrls.length === 1 ? "grid-cols-1" : "grid-cols-2"
+          }`}
+        >
+          {visibleImages.map((src, index) => {
+            const isSingle = imageUrls.length === 1;
+            const isTripleHero = imageUrls.length === 3 && index === 0;
+            const isLastVisibleWithOverflow =
+              remainingImages > 0 && index === visibleImages.length - 1;
+
+            return (
+              <div
+                key={`${post.id}-${src}-${index}`}
+                className={[
+                  "relative overflow-hidden bg-[#e9edf5]",
+                  isSingle ? "max-h-152" : "aspect-square",
+                  isTripleHero ? "row-span-2" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                <img
+                  src={src}
+                  alt={`Post image ${index + 1}`}
+                  className={`h-full w-full object-cover ${
+                    isSingle ? "max-h-152 object-contain" : ""
+                  }`}
+                  loading="lazy"
+                />
+
+                {isLastVisibleWithOverflow ? (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/45 text-3xl font-semibold text-white">
+                    +{remainingImages}
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
       ) : null}
 
