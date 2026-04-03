@@ -105,20 +105,20 @@ const ProfileView = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 font-sans">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-7xl px-2 sm:px-4">
         {/* Header with Cover and Profile */}
         <ProfileHeader user={user} />
         <ProfileInfo user={user} currentUserId={currentUser?.id} />
 
         {/* Tabs Navigation */}
-        <div className="mt-6">
+        <div className="mt-4 sm:mt-6">
           <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
 
         {/* Two Column Layout */}
-        <div className="mt-6 flex flex-col gap-6 lg:flex-row">
+        <div className="mt-4 flex flex-col gap-4 sm:mt-6 sm:gap-6 lg:flex-row">
           {/* Left Sidebar */}
-          <div className="space-y-6 lg:w-5/12">
+          <div className="space-y-4 sm:space-y-6 lg:w-5/12">
             <IntroCard user={user} />
             <PhotosPreview photos={user?.photos || []} />
             <FriendsPreview

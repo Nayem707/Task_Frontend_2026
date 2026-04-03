@@ -97,10 +97,14 @@ function Navbar() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-[#edf0f7] bg-white shadow-xs">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 md:px-0">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-4 sm:py-3 md:px-0">
         {/* Logo */}
         <Link to="/feed" className="shrink-0">
-          <img src="/images/logo.svg" alt="BuddyScript" className="h-8" />
+          <img
+            src="/images/logo.svg"
+            alt="BuddyScript"
+            className="h-6 sm:h-8"
+          />
         </Link>
 
         {/* Search */}
@@ -114,11 +118,11 @@ function Navbar() {
         </div>
 
         {/* Nav Icons */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-1 sm:gap-3 md:gap-6">
           {/* Home - active */}
           <Link
             to="/feed"
-            className="relative rounded-xl p-2.5 hover:bg-[#f0f4ff]"
+            className="relative hidden rounded-xl p-2.5 hover:bg-[#f0f4ff] sm:block"
           >
             <Home size={21} className="text-[#377DFF]" />
             <span className="absolute bottom-1 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-[#377DFF]" />
@@ -127,13 +131,13 @@ function Navbar() {
           {/* Friends */}
           <Link
             to="/profile/friends"
-            className="rounded-xl p-2.5 hover:bg-[#f0f4ff]"
+            className="hidden rounded-xl p-2.5 hover:bg-[#f0f4ff] sm:block"
           >
             <Users size={22} className="text-gray-500" fill="none" />
           </Link>
 
           {/* Notifications */}
-          <div ref={notifyRef} className="relative">
+          <div ref={notifyRef} className="relative hidden sm:block">
             <button
               type="button"
               onClick={() => setNotifyOpen((v) => !v)}
@@ -149,7 +153,7 @@ function Navbar() {
 
             {/* Notifications Dropdown */}
             {notifyOpen && (
-              <div className="absolute top-full -right-54 z-50 mt-3 w-100 rounded-b-xl border border-[#e7edf8] bg-white shadow-xl">
+              <div className="absolute top-full -right-4 z-50 mt-3 w-screen rounded-b-xl border border-[#e7edf8] bg-white shadow-xl sm:-right-54 sm:w-100">
                 <div className="flex items-center justify-between border-b border-[#e7edf8] px-4 py-3">
                   <h4 className="font-semibold text-[#112032]">
                     Notifications
@@ -209,7 +213,7 @@ function Navbar() {
           </div>
 
           {/* Chat */}
-          <div ref={chatRef} className="relative">
+          <div ref={chatRef} className="relative hidden sm:block">
             <button
               type="button"
               onClick={() => setChatOpen((v) => !v)}
@@ -225,7 +229,7 @@ function Navbar() {
 
             {/* Chat Dropdown */}
             {chatOpen && (
-              <div className="absolute top-full -right-20 z-50 mt-3 w-82 rounded-b-xl border border-[#e7edf8] bg-white shadow-xl">
+              <div className="absolute top-full -right-4 z-50 mt-3 w-screen rounded-b-xl border border-[#e7edf8] bg-white shadow-xl sm:-right-20 sm:w-82">
                 <div className="flex items-center justify-between border-b border-[#e7edf8] px-4 py-3">
                   <h4 className="font-semibold text-[#112032]">Messages</h4>
                   <Link
@@ -296,13 +300,13 @@ function Navbar() {
         {/* Profile */}
         <div
           ref={profileRef}
-          className="relative flex cursor-pointer items-center gap-2.5"
+          className="relative flex cursor-pointer items-center gap-1.5 sm:gap-2.5"
           onClick={() => setProfileOpen((v) => !v)}
         >
           <img
             src={avatarSrc}
             alt="Profile"
-            className="h-10 w-10 rounded-full object-cover"
+            className="h-8 w-8 rounded-full object-cover sm:h-10 sm:w-10"
             loading="lazy"
           />
 
@@ -320,7 +324,7 @@ function Navbar() {
 
           {profileOpen && (
             <div
-              className="absolute top-full -right-10 z-50 mt-3 w-56 overflow-hidden rounded-b-xl border border-[#e7edf8] bg-white shadow-xl"
+              className="absolute top-full -right-4 z-50 mt-3 w-56 overflow-hidden rounded-b-xl border border-[#e7edf8] bg-white shadow-xl sm:-right-10"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-3 border-b border-[#e7edf8] px-4 py-3">

@@ -6,10 +6,10 @@ function FriendsTabs({
   followersCount,
 }) {
   return (
-    <div className="mb-6 flex gap-2 border-b border-gray-200">
+    <div className="scrollbar-hide mb-4 flex gap-1 overflow-x-auto border-b border-gray-200 sm:mb-6 sm:gap-2">
       <button
         onClick={() => onTabChange("friends")}
-        className={`px-4 py-2 text-sm font-semibold transition ${
+        className={`shrink-0 px-3 py-2 text-xs font-semibold transition sm:px-4 sm:text-sm ${
           activeTab === "friends"
             ? "border-b-2 border-blue-600 text-blue-600"
             : "text-gray-500 hover:text-gray-700"
@@ -19,22 +19,22 @@ function FriendsTabs({
       </button>
       <button
         onClick={() => onTabChange("requests")}
-        className={`px-4 py-2 text-sm font-semibold transition ${
+        className={`shrink-0 px-3 py-2 text-xs font-semibold transition sm:px-4 sm:text-sm ${
           activeTab === "requests"
             ? "border-b-2 border-blue-600 text-blue-600"
             : "text-gray-500 hover:text-gray-700"
         }`}
       >
-        Friend Requests
+        <span className="hidden sm:inline">Friend </span>Requests
         {requestsCount > 0 && (
-          <span className="ml-2 rounded-full bg-red-500 px-2 py-0.5 text-xs text-white">
+          <span className="ml-1 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] text-white sm:ml-2 sm:px-2 sm:text-xs">
             {requestsCount}
           </span>
         )}
       </button>
       <button
         onClick={() => onTabChange("following")}
-        className={`px-4 py-2 text-sm font-semibold transition ${
+        className={`shrink-0 px-3 py-2 text-xs font-semibold transition sm:px-4 sm:text-sm ${
           activeTab === "following"
             ? "border-b-2 border-blue-600 text-blue-600"
             : "text-gray-500 hover:text-gray-700"
@@ -42,12 +42,14 @@ function FriendsTabs({
       >
         Following
         {followingCount > 0 && (
-          <span className="ml-2 text-xs text-gray-400">{followingCount}</span>
+          <span className="ml-1 text-[10px] text-gray-400 sm:ml-2 sm:text-xs">
+            {followingCount}
+          </span>
         )}
       </button>
       <button
         onClick={() => onTabChange("followers")}
-        className={`px-4 py-2 text-sm font-semibold transition ${
+        className={`shrink-0 px-3 py-2 text-xs font-semibold transition sm:px-4 sm:text-sm ${
           activeTab === "followers"
             ? "border-b-2 border-blue-600 text-blue-600"
             : "text-gray-500 hover:text-gray-700"
@@ -55,7 +57,9 @@ function FriendsTabs({
       >
         Followers
         {followersCount > 0 && (
-          <span className="ml-2 text-xs text-gray-400">{followersCount}</span>
+          <span className="ml-1 text-[10px] text-gray-400 sm:ml-2 sm:text-xs">
+            {followersCount}
+          </span>
         )}
       </button>
     </div>

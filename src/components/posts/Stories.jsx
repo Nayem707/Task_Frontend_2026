@@ -109,11 +109,11 @@ const Stories = () => {
   );
 
   return (
-    <section className="relative mb-6 rounded-2xl bg-white px-4 py-4 shadow-sm">
+    <section className="relative mb-4 rounded-xl bg-white px-2 py-3 shadow-sm sm:mb-6 sm:rounded-2xl sm:px-4 sm:py-4">
       {/* Slider Container */}
       <div className="relative overflow-hidden">
         <div
-          className="flex gap-3 transition-transform duration-500 ease-out"
+          className="flex gap-2 transition-transform duration-500 ease-out sm:gap-3"
           style={{
             transform: `translateX(-${currentIndex * (130 + 12)}px)`, // 130px width + 12px gap (gap-3 = 0.75rem = 12px)
           }}
@@ -121,7 +121,7 @@ const Stories = () => {
           {allStories.map((story) => (
             <div
               key={story.id}
-              className="relative h-[200px] w-[130px] shrink-0 cursor-pointer overflow-hidden rounded-xl"
+              className="relative h-[160px] w-[110px] shrink-0 cursor-pointer overflow-hidden rounded-xl sm:h-[200px] sm:w-[130px]"
             >
               {story.isYourStory ? (
                 // Your Story Card
@@ -130,15 +130,19 @@ const Stories = () => {
                   <img
                     src={story.avatar}
                     alt="Your Story"
-                    className="absolute bottom-10 left-1/2 h-16 w-16 -translate-x-1/2 rounded-full border-2 border-white object-cover"
+                    className="absolute bottom-8 left-1/2 h-12 w-12 -translate-x-1/2 rounded-full border-2 border-white object-cover sm:bottom-10 sm:h-16 sm:w-16"
                   />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-2 pt-8 pb-2">
-                    <p className="text-center text-xs font-semibold text-white">
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-1.5 pt-6 pb-1.5 sm:px-2 sm:pt-8 sm:pb-2">
+                    <p className="text-center text-[10px] font-semibold text-white sm:text-xs">
                       {story.name}
                     </p>
                   </div>
-                  <div className="absolute top-3 left-1/2 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full border-2 border-white bg-blue-600 shadow-md">
-                    <Plus size={16} className="text-white" strokeWidth={3} />
+                  <div className="absolute top-2 left-1/2 flex h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full border-2 border-white bg-blue-600 shadow-md sm:top-3 sm:h-8 sm:w-8">
+                    <Plus
+                      size={14}
+                      className="text-white sm:size-4"
+                      strokeWidth={3}
+                    />
                   </div>
                 </>
               ) : (
@@ -149,15 +153,15 @@ const Stories = () => {
                     alt={story.name}
                     className="absolute inset-0 h-full w-full object-cover"
                   />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2 pt-10 pb-2">
-                    <p className="text-center text-xs font-semibold text-white">
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-1.5 pt-8 pb-1.5 sm:px-2 sm:pt-10 sm:pb-2">
+                    <p className="text-center text-[10px] font-semibold text-white sm:text-xs">
                       {story.name}
                     </p>
                   </div>
                   <img
                     src={story.avatar}
                     alt={story.name}
-                    className="absolute top-3 left-3 h-10 w-10 rounded-full border-2 border-blue-500 object-cover"
+                    className="absolute top-2 left-2 h-8 w-8 rounded-full border-2 border-blue-500 object-cover sm:top-3 sm:left-3 sm:h-10 sm:w-10"
                   />
                 </>
               )}

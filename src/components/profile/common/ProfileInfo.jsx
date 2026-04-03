@@ -37,23 +37,27 @@ export const ProfileInfo = ({ user, currentUserId }) => {
   };
 
   return (
-    <div className="rounded-b-xl bg-white px-4 pb-4 shadow-sm md:px-6">
-      <div className="flex flex-col items-start justify-between gap-4 pt-16 md:flex-row md:items-end">
+    <div className="rounded-b-xl bg-white px-3 pb-3 shadow-sm sm:px-4 sm:pb-4 md:px-6">
+      <div className="flex flex-col items-start justify-between gap-3 pt-12 sm:gap-4 sm:pt-16 md:flex-row md:items-end">
         {/* User Details */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">
+          <h1 className="text-xl font-bold text-gray-900 sm:text-2xl md:text-3xl">
             {user.firstName} {user.lastName}
           </h1>
 
           <div className="flex gap-2">
-            <div className="mt-1 flex items-center gap-2 text-gray-600">
-              <Users size={14} />
-              <span className="text-sm">{user.followers || 0} followers</span>
+            <div className="mt-1 flex items-center gap-1.5 text-gray-600 sm:gap-2">
+              <Users size={12} className="sm:size-[14px]" />
+              <span className="text-xs sm:text-sm">
+                {user.followers || 0} followers
+              </span>
             </div>
 
-            <div className="mt-1 flex items-center gap-2 text-gray-600">
-              <Users size={14} />
-              <span className="text-sm">{user.following || 0} following</span>
+            <div className="mt-1 flex items-center gap-1.5 text-gray-600 sm:gap-2">
+              <Users size={12} className="sm:size-[14px]" />
+              <span className="text-xs sm:text-sm">
+                {user.following || 0} following
+              </span>
             </div>
           </div>
 
@@ -77,13 +81,14 @@ export const ProfileInfo = ({ user, currentUserId }) => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex w-full flex-wrap gap-2 md:w-auto">
           {isOwnProfile ? (
             <button
               onClick={() => setEditOpen(true)}
-              className="flex items-center gap-2 rounded-full bg-gray-200 px-5 py-2 text-sm font-semibold text-gray-800 transition hover:bg-gray-300"
+              className="flex items-center gap-1.5 rounded-full bg-gray-200 px-4 py-1.5 text-xs font-semibold text-gray-800 transition hover:bg-gray-300 sm:gap-2 sm:px-5 sm:py-2 sm:text-sm"
             >
-              <MoreHorizontal size={14} /> Edit profile
+              <MoreHorizontal size={12} className="sm:size-[14px]" /> Edit
+              profile
             </button>
           ) : (
             <>

@@ -79,20 +79,20 @@ function PostCard({ post }) {
   };
 
   return (
-    <article className="app-card mb-4 overflow-hidden pt-4">
+    <article className="app-card mb-4 overflow-hidden pt-3 sm:pt-4">
       {/* Post Header */}
-      <div className="mb-3 flex items-start justify-between gap-2 px-6">
-        <div className="flex items-center gap-3">
+      <div className="mb-2 flex items-start justify-between gap-2 px-3 sm:mb-3 sm:px-6">
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* Letter Avatar */}
           <Link
             to={`/profile/${post.author?.id}`}
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-lg font-semibold text-[#acb2b9]"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-200 text-base font-semibold text-[#acb2b9] sm:h-11 sm:w-11 sm:text-lg"
           >
             {post.author?.avatarUrl ? (
               <img
                 src={post.author.avatarUrl}
                 alt=""
-                className="h-11 w-11 rounded-full object-cover"
+                className="h-9 w-9 rounded-full object-cover sm:h-11 sm:w-11"
               />
             ) : (
               (post.author?.firstName ?? "U").charAt(0).toUpperCase()
@@ -102,13 +102,13 @@ function PostCard({ post }) {
           <div>
             <Link
               to={`/profile/${post.author?.id}`}
-              className="text-sm font-semibold text-[#112032] hover:underline"
+              className="text-xs font-semibold text-[#112032] hover:underline sm:text-sm"
             >
               {post.author?.firstName
                 ? `${post.author.firstName} ${post.author.lastName ?? ""}`.trim()
                 : post.author?.name || "Unknown Author"}
             </Link>
-            <p className="flex gap-1 text-xs text-[#79879d]">
+            <p className="flex gap-1 text-[10px] text-[#79879d] sm:text-xs">
               <span>{formatDateTime(post.createdAt)} ● </span>
               <a href="#" className="hover:underline">
                 {post.visibility === "PUBLIC" ? (
@@ -181,8 +181,8 @@ function PostCard({ post }) {
       </div>
 
       {/* Content */}
-      <div className="px-6">
-        <p className="mb-3 text-sm font-semibold text-[#112032]">
+      <div className="px-3 sm:px-6">
+        <p className="mb-2 text-xs font-semibold text-[#112032] sm:mb-3 sm:text-sm">
           {post.content}
         </p>
       </div>
@@ -190,7 +190,7 @@ function PostCard({ post }) {
       {/* Images */}
       {imageUrls.length > 0 ? (
         <div
-          className={`mb-4 grid gap-1 overflow-hidden bg-[#f4f6fa] ${
+          className={`mb-3 grid gap-1 overflow-hidden bg-[#f4f6fa] sm:mb-4 ${
             imageUrls.length === 1 ? "grid-cols-1" : "grid-cols-2"
           }`}
         >
@@ -232,7 +232,7 @@ function PostCard({ post }) {
       ) : null}
 
       {/* Reaction counts */}
-      <div className="mb-4 flex items-center justify-between px-6">
+      <div className="mb-3 flex items-center justify-between px-3 sm:mb-4 sm:px-6">
         <div className="flex items-center gap-1">
           {likesUsers.length > 0 && (
             <div className="mt-3 flex -space-x-2 overflow-hidden">
@@ -281,46 +281,46 @@ function PostCard({ post }) {
       </div>
 
       {/* Reaction Buttons */}
-      <div className="flex items-center gap-2 border-y border-[#edf1f7] px-2 py-1">
+      <div className="flex items-center gap-1 border-y border-[#edf1f7] px-1 py-1 sm:gap-2 sm:px-2">
         <button
           type="button"
           onClick={handleToggleLike}
-          className={`flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-sm font-medium transition ${post.likedByMe ? "bg-[#EBF3FF] text-[#377DFF]" : "text-[#4c5a71] hover:bg-[#f3f7ff]"}`}
+          className={`flex flex-1 items-center justify-center gap-1 rounded-lg py-1.5 text-xs font-medium transition sm:gap-2 sm:py-2 sm:text-sm ${post.likedByMe ? "bg-[#EBF3FF] text-[#377DFF]" : "text-[#4c5a71] hover:bg-[#f3f7ff]"}`}
         >
           <ThumbsUp
-            size={20}
+            size={18}
             fill={post.likedByMe ? "#377DFF" : "none"}
-            className={post.likedByMe ? "text-[#377DFF]" : "text-[#4c5a71]"}
+            className={`sm:size-5 ${post.likedByMe ? "text-[#377DFF]" : "text-[#4c5a71]"}`}
           />
-          Like
+          <span className="hidden sm:inline">Like</span>
         </button>
         <button
           type="button"
           onClick={() => setCommentsOpen((v) => !v)}
-          className={`flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-sm font-medium transition ${
+          className={`flex flex-1 items-center justify-center gap-1 rounded-lg py-1.5 text-xs font-medium transition sm:gap-2 sm:py-2 sm:text-sm ${
             commentsOpen
               ? "bg-[#EBF3FF] text-[#377DFF]"
               : "text-[#4c5a71] hover:bg-[#f3f7ff]"
           }`}
         >
           <MessageSquare
-            size={20}
-            className={commentsOpen ? "text-[#377DFF]" : "text-[#4c5a71]"}
+            size={18}
+            className={`sm:size-5 ${commentsOpen ? "text-[#377DFF]" : "text-[#4c5a71]"}`}
           />
-          Comment
+          <span className="hidden sm:inline">Comment</span>
         </button>
         <button
           type="button"
-          className="flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-sm font-medium text-[#4c5a71] transition hover:bg-[#f3f7ff]"
+          className="flex flex-1 items-center justify-center gap-1 rounded-lg py-1.5 text-xs font-medium text-[#4c5a71] transition hover:bg-[#f3f7ff] sm:gap-2 sm:py-2 sm:text-sm"
         >
-          <Share2 size={20} className="text-[#4c5a71]" />
-          Share
+          <Share2 size={18} className="text-[#4c5a71] sm:size-5" />
+          <span className="hidden sm:inline">Share</span>
         </button>
       </div>
 
       {/* Comments */}
       {commentsOpen ? (
-        <div className="px-6">
+        <div className="px-3 sm:px-6">
           <CommentList postId={post.id} totalCount={post.commentsCount || 0} />
         </div>
       ) : null}

@@ -3,34 +3,36 @@ import { Link } from "react-router-dom";
 
 function FriendCard({ friend, onRemove }) {
   return (
-    <div className="overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-md">
+    <div className="overflow-hidden rounded-lg bg-white shadow-sm transition hover:shadow-md sm:rounded-xl">
       <Link to={`/profile/${friend.id}`}>
         <img
           src={friend.avatar}
           alt={friend.name}
-          className="h-40 w-full object-cover"
+          className="h-32 w-full object-cover sm:h-40"
         />
       </Link>
-      <div className="p-3">
+      <div className="p-2.5 sm:p-3">
         <Link to={`/profile/${friend.id}`}>
-          <h3 className="font-semibold text-gray-900 hover:underline">
+          <h3 className="text-sm font-semibold text-gray-900 hover:underline">
             {friend.name}
           </h3>
         </Link>
-        <p className="text-xs text-gray-500">@{friend.username}</p>
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="text-[10px] text-gray-500 sm:text-xs">
+          @{friend.username}
+        </p>
+        <p className="mt-0.5 text-[10px] text-gray-500 sm:mt-1 sm:text-xs">
           {friend.mutualFriends} mutual friends
         </p>
-        <div className="mt-3 flex gap-2">
+        <div className="mt-2 flex gap-1.5 sm:mt-3 sm:gap-2">
           <button
             onClick={() => onRemove(friend.id)}
-            className="flex flex-1 items-center justify-center gap-1 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-200"
+            className="flex flex-1 items-center justify-center gap-1 rounded-full bg-gray-100 px-2.5 py-1.5 text-[10px] font-medium text-gray-700 transition hover:bg-gray-200 sm:px-3 sm:text-xs"
           >
-            <UserMinus size={14} />
+            <UserMinus size={12} className="sm:size-[14px]" />
             Remove
           </button>
           <button className="flex items-center justify-center rounded-full bg-gray-100 p-1.5 text-gray-700 transition hover:bg-gray-200">
-            <MoreHorizontal size={16} />
+            <MoreHorizontal size={14} className="sm:size-4" />
           </button>
         </div>
       </div>

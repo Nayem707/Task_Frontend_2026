@@ -81,20 +81,20 @@ function CreatePost() {
   };
 
   return (
-    <section className="app-card mb-4 px-6 py-6">
+    <section className="app-card mb-4 px-3 py-4 sm:px-6 sm:py-6">
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Textarea row */}
-        <div className="mb-4 flex items-start gap-3">
+        <div className="mb-4 flex items-start gap-2 sm:gap-3">
           <img
             src={avatarSrc}
             alt="Your avatar"
-            className="h-11 w-11 shrink-0 rounded-full object-cover"
+            className="h-9 w-9 shrink-0 rounded-full object-cover sm:h-11 sm:w-11"
           />
           <div className="relative flex-1">
             <textarea
               rows={3}
               placeholder="Write something ..."
-              className="w-full resize-none rounded-xl border border-[#e7edf8] bg-[#f5f7fb] px-4 py-3 pr-10 text-sm text-[#112032] outline-none placeholder:text-[#a0aab8] focus:border-[#377DFF] focus:ring-2 focus:ring-[#377DFF]/20"
+              className="w-full resize-none rounded-xl border border-[#e7edf8] bg-[#f5f7fb] px-3 py-2 pr-10 text-sm text-[#112032] outline-none placeholder:text-[#a0aab8] focus:border-[#377DFF] focus:ring-2 focus:ring-[#377DFF]/20 sm:px-4 sm:py-3"
               {...register("content", { maxLength: 1500 })}
             />
             <span className="pointer-events-none absolute top-3 right-3">
@@ -106,7 +106,7 @@ function CreatePost() {
         {/* Image previews */}
         {selectedFiles.length > 0 && (
           <div
-            className={`mb-4 grid gap-2 pl-14 ${
+            className={`mb-4 grid gap-2 pl-0 sm:pl-14 ${
               selectedFiles.length === 1
                 ? "grid-cols-1"
                 : "grid-cols-2 sm:grid-cols-3"
@@ -120,7 +120,7 @@ function CreatePost() {
                 <img
                   src={preview}
                   alt={file.name}
-                  className="h-40 w-full object-cover"
+                  className="h-32 w-full object-cover sm:h-40"
                   loading="lazy"
                 />
                 {/* Remove button */}
@@ -143,7 +143,7 @@ function CreatePost() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex h-40 flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-[#c6d4e8] text-sm text-[#7c8fa8] hover:bg-[#f5f7fb]"
+                className="flex h-32 flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-[#c6d4e8] text-sm text-[#7c8fa8] hover:bg-[#f5f7fb] sm:h-40"
               >
                 <Image size={22} className="text-[#7c8fa8]" />
                 <span className="text-xs">Add more</span>
@@ -156,16 +156,16 @@ function CreatePost() {
         )}
 
         {/* Bottom bar */}
-        <div className="flex items-center justify-between border-t border-[#edf1f7] pt-4">
-          <div className="flex items-center gap-1">
+        <div className="flex items-center justify-between border-t border-[#edf1f7] pt-3 sm:pt-4">
+          <div className="flex flex-wrap items-center gap-0.5 sm:gap-1">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={selectedFiles.length >= MAX_IMAGES}
-              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-[#4c5a71] hover:bg-[#f3f7ff] disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium text-[#4c5a71] hover:bg-[#f3f7ff] disabled:cursor-not-allowed disabled:opacity-50 sm:gap-1.5 sm:px-3 sm:py-2"
             >
-              <Image size={17} className="text-[#666]" />
-              Photo
+              <Image size={16} className="text-[#666] sm:size-[17px]" />
+              <span className="hidden sm:inline">Photo</span>
               {selectedFiles.length > 0 && (
                 <span className="ml-0.5 rounded-full bg-[#377DFF] px-1.5 py-0.5 text-[9px] font-bold text-white">
                   {selectedFiles.length}
@@ -174,14 +174,14 @@ function CreatePost() {
             </button>
             <button
               type="button"
-              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-[#4c5a71] hover:bg-[#f3f7ff]"
+              className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium text-[#4c5a71] hover:bg-[#f3f7ff] sm:gap-1.5 sm:px-3 sm:py-2"
             >
-              <Video size={17} className="text-[#666]" />
-              Video
+              <Video size={16} className="text-[#666] sm:size-[17px]" />
+              <span className="hidden sm:inline">Video</span>
             </button>
             <button
               type="button"
-              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-[#4c5a71] hover:bg-[#f3f7ff]"
+              className="hidden items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-[#4c5a71] hover:bg-[#f3f7ff] md:flex"
             >
               <CalendarDays size={17} className="text-[#666]" />
               Event
@@ -210,10 +210,12 @@ function CreatePost() {
           <button
             type="submit"
             disabled={creating}
-            className="flex items-center gap-2 rounded-lg bg-[#377DFF] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#2569e6] disabled:opacity-60"
+            className="flex items-center gap-1.5 rounded-lg bg-[#377DFF] px-3 py-2 text-sm font-semibold text-white hover:bg-[#2569e6] disabled:opacity-60 sm:gap-2 sm:px-5 sm:py-2.5"
           >
             <Send size={14} className="text-white" />
-            {creating ? "Posting..." : "Post"}
+            <span className="hidden sm:inline">
+              {creating ? "Posting..." : "Post"}
+            </span>
           </button>
         </div>
       </form>
