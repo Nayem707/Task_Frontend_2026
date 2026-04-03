@@ -42,20 +42,20 @@ function RegisterView() {
       <img
         src="/images/shape1.svg"
         alt=""
-        className="pointer-events-none absolute left-0 top-0 w-52 opacity-80"
+        className="pointer-events-none absolute top-0 left-0 w-32 opacity-80 sm:w-40 md:w-52"
       />
       <img
         src="/images/shape2.svg"
         alt=""
-        className="pointer-events-none absolute right-0 top-16 w-52 opacity-80"
+        className="pointer-events-none absolute top-8 right-0 w-32 opacity-80 sm:top-12 sm:w-40 md:top-16 md:w-52"
       />
       <img
         src="/images/shape3.svg"
         alt=""
-        className="pointer-events-none absolute bottom-0 left-1/3 w-40 opacity-80"
+        className="pointer-events-none absolute bottom-0 left-1/3 w-24 opacity-80 sm:w-32 md:w-40"
       />
 
-      <div className="mx-auto grid min-h-screen w-full max-w-7xl items-center gap-8 px-4 py-10 lg:grid-cols-[1fr_420px]">
+      <div className="mx-auto grid min-h-screen w-full max-w-7xl items-center gap-6 px-3 py-6 sm:gap-8 sm:px-4 sm:py-10 lg:grid-cols-[1fr_420px]">
         <div className="hidden lg:block">
           <img
             src="/images/registration.png"
@@ -65,22 +65,35 @@ function RegisterView() {
           />
         </div>
 
-        <section className="app-card mx-auto w-full max-w-md p-6 sm:p-8">
-          <img src="/images/logo.svg" alt="Buddy Script" className="mb-8 h-8" />
-          <p className="mb-1 text-sm text-[#6b7a92]">Get Started Now</p>
-          <h1 className="mb-8 text-2xl font-semibold text-[#112032]">
+        <section className="app-card mx-auto w-full max-w-md p-4 sm:p-6 md:p-8">
+          <img
+            src="/images/logo.svg"
+            alt="Buddy Script"
+            className="mb-6 h-6 sm:mb-8 sm:h-8"
+          />
+          <p className="mb-1 text-xs text-[#6b7a92] sm:text-sm">
+            Get Started Now
+          </p>
+          <h1 className="mb-6 text-xl font-semibold text-[#112032] sm:mb-8 sm:text-2xl">
             Registration
           </h1>
 
           <button
             type="button"
-            className="mb-6 flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-[#dbe5f2] bg-white text-sm font-medium text-[#21334d]"
+            className="mb-4 flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-[#dbe5f2] bg-white text-xs font-medium text-[#21334d] sm:mb-6 sm:h-11 sm:text-sm"
           >
-            <img src="/images/google.svg" alt="Google" className="h-4 w-4" />
+            <img
+              src="/images/google.svg"
+              alt="Google"
+              className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+            />
             Register with google
           </button>
 
-          <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          <form
+            className="space-y-3 sm:space-y-4"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <Input
               label="Email"
               type="email"
@@ -112,25 +125,29 @@ function RegisterView() {
               })}
             />
 
-            <label className="flex items-start gap-2 text-sm text-[#54627a]">
+            <label className="flex items-start gap-2 text-xs text-[#54627a] sm:text-sm">
               <input
                 type="checkbox"
-                className="mt-1"
+                className="mt-0.5 sm:mt-1"
                 {...register("agree", { required: true })}
               />
               I agree to terms & conditions
             </label>
             {errors.agree ? (
-              <p className="text-xs text-red-500">
+              <p className="text-[10px] text-red-500 sm:text-xs">
                 You must agree to continue.
               </p>
             ) : null}
-            <Button type="submit" className="h-11 w-full" disabled={loading}>
+            <Button
+              type="submit"
+              className="h-10 w-full sm:h-11"
+              disabled={loading}
+            >
               {loading ? "Creating account…" : "Create account"}
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-[#6b7a92]">
+          <p className="mt-4 text-center text-xs text-[#6b7a92] sm:mt-6 sm:text-sm">
             Already have an account?{" "}
             <Link to={ROUTES.LOGIN} className="font-semibold text-[#377DFF]">
               Login
