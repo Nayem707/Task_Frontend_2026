@@ -1,23 +1,26 @@
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPosts } from "../../features/posts/postsAPI";
+import { fetchMyFeed } from "../../features/posts/postsAPI";
 import PostCard from "./PostCard";
 import Skeleton from "../common/Skeleton";
 
 function PostList() {
   const dispatch = useDispatch();
-  const { items, loading, nextCursor, hasMore } = useSelector(
-    (state) => state.posts
-  );
+  const {
+    items,
+    loading,
+    hasMore,
+    currentPage = 1,
+  } = useSelector((state) => state.posts);
 
   useEffect(() => {
-    dispatch(fetchPosts());
+    dispatch(fetchMyFeed({ page: 1 }));
   }, [dispatch]);
 
   const loadMore = useCallback(() => {
-    if (!hasMore || loading || !nextCursor) return;
-    dispatch(fetchPosts({ cursor: nextCursor }));
-  }, [dispatch, hasMore, loading, nextCursor]);
+    if (!hasMore || loading) return;
+    dispatch(fetchMyFeed({ page: currentPage + 1 }));
+  }, [dispatch, hasMore, loading, currentPage]);
 
   useEffect(() => {
     const onScroll = () => {

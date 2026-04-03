@@ -12,6 +12,7 @@ export const ENDPOINT = {
   POSTS: {
     LIST: "/posts",
     MY_FEED: "/posts/feed/me",
+    MY_WON_POSTS: "/posts/me",
     BY_USER: (userId) => `/posts/user/${userId}`,
     CREATE: "/posts",
     GET: (id) => `/posts/${id}`,

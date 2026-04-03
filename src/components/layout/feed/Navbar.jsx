@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Search,
   Home,
@@ -44,9 +44,9 @@ function Navbar() {
     <header className="sticky top-0 z-30 border-b border-[#edf0f7] bg-white shadow-xs">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 md:px-0">
         {/* Logo */}
-        <a href="#" className="shrink-0">
+        <Link to="/feed" className="shrink-0">
           <img src="/images/logo.svg" alt="BuddyScript" className="h-8" />
-        </a>
+        </Link>
 
         {/* Search */}
         <div className="mx-2 hidden max-w-lg flex-1 items-center gap-2 rounded-full bg-[#f5f7fb] px-3 py-2 lg:flex">
@@ -61,15 +61,18 @@ function Navbar() {
         {/* Nav Icons */}
         <div className="flex items-center gap-6">
           {/* Home - active */}
-          <a href="#" className="relative rounded-xl p-2.5 hover:bg-[#f0f4ff]">
+          <Link
+            to="/feed"
+            className="relative rounded-xl p-2.5 hover:bg-[#f0f4ff]"
+          >
             <Home size={21} className="text-[#377DFF]" />
             <span className="absolute bottom-1 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-[#377DFF]" />
-          </a>
+          </Link>
 
           {/* Friends */}
-          <a href="#" className="rounded-xl p-2.5 hover:bg-[#f0f4ff]">
+          <Link to="/friends" className="rounded-xl p-2.5 hover:bg-[#f0f4ff]">
             <Users size={22} className="text-gray-500" fill="none" />
-          </a>
+          </Link>
 
           {/* Notifications */}
           <div ref={notifyRef} className="relative">
@@ -131,12 +134,15 @@ function Navbar() {
           </div>
 
           {/* Chat */}
-          <a href="#" className="relative rounded-xl p-2.5 hover:bg-[#f0f4ff]">
+          <Link
+            to="/chat"
+            className="relative rounded-xl p-2.5 hover:bg-[#f0f4ff]"
+          >
             <MessageCircle size={22} className="text-gray-500" fill="none" />
             <span className="absolute -top-0.5 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-[#FF6B6B] text-[10px] font-bold text-white">
               2
             </span>
-          </a>
+          </Link>
         </div>
 
         {/* Profile */}
@@ -175,9 +181,9 @@ function Navbar() {
                   <p className="text-sm font-semibold text-[#112032]">
                     {fullName}
                   </p>
-                  <a href="#" className="text-xs text-[#377DFF]">
+                  <Link to="/profile" className="text-xs text-[#377DFF]">
                     View Profile
-                  </a>
+                  </Link>
                 </div>
               </div>
               <hr className="border-[#e7edf8]" />
