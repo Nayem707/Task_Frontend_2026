@@ -264,11 +264,17 @@ function Navbar() {
                           isUnread ? "bg-[#f0f6ff]" : ""
                         }`}
                       >
-                        <img
-                          src={partner.avatarUrl || "/images/profile.png"}
-                          className="h-10 w-10 shrink-0 rounded-full object-cover"
-                          alt={`${partner.firstName} ${partner.lastName}`}
-                        />
+                        {partner.avatarUrl ? (
+                          <img
+                            src={partner.avatarUrl}
+                            className="h-10 w-10 shrink-0 rounded-full object-cover"
+                            alt={`${partner.firstName} ${partner.lastName}`}
+                          />
+                        ) : (
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-600">
+                            {(partner.firstName || "U").charAt(0).toUpperCase()}
+                          </div>
+                        )}
                         <div className="min-w-0 flex-1">
                           <p className="truncate text-sm font-semibold text-[#112032]">
                             {partner.firstName} {partner.lastName}
@@ -303,12 +309,18 @@ function Navbar() {
           className="relative flex cursor-pointer items-center gap-1.5 sm:gap-2.5"
           onClick={() => setProfileOpen((v) => !v)}
         >
-          <img
-            src={avatarSrc}
-            alt="Profile"
-            className="h-8 w-8 rounded-full object-cover sm:h-10 sm:w-10"
-            loading="lazy"
-          />
+          {user?.avatarUrl ? (
+            <img
+              src={avatarSrc}
+              alt="Profile"
+              className="h-8 w-8 rounded-full object-cover sm:h-10 sm:w-10"
+              loading="lazy"
+            />
+          ) : (
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-600 sm:h-10 sm:w-10">
+              {(user?.firstName || "U").charAt(0).toUpperCase()}
+            </div>
+          )}
 
           <div className="relative">
             <div className="absolute right-1 -bottom-4 cursor-pointer rounded-full border-2 border-white bg-green-800 p-1 transition hover:bg-gray-900" />
@@ -328,11 +340,17 @@ function Navbar() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-3 border-b border-[#e7edf8] px-4 py-3">
-                <img
-                  src={avatarSrc}
-                  className="h-10 w-10 shrink-0 rounded-full object-cover"
-                  alt=""
-                />
+                {user?.avatarUrl ? (
+                  <img
+                    src={avatarSrc}
+                    className="h-10 w-10 shrink-0 rounded-full object-cover"
+                    alt=""
+                  />
+                ) : (
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-600">
+                    {(user?.firstName || "U").charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <div>
                   <p className="text-sm font-semibold text-[#112032]">
                     {fullName}

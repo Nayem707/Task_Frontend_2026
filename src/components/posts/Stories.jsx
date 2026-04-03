@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { useSelector } from "react-redux";
+import { ChevronLeft, ChevronRight, Plus, User2 } from "lucide-react";
 
 const friendStories = [
   {
@@ -61,6 +62,7 @@ const Stories = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(4);
   const containerRef = useRef(null);
+  const currentUser = useSelector((state) => state.auth.user);
 
   // Update visible count based on screen width
   useEffect(() => {
@@ -127,11 +129,17 @@ const Stories = () => {
                 // Your Story Card
                 <>
                   <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300" />
-                  <img
-                    src={story.avatar}
-                    alt="Your Story"
-                    className="absolute bottom-8 left-1/2 h-12 w-12 -translate-x-1/2 rounded-full border-2 border-white object-cover sm:bottom-10 sm:h-16 sm:w-16"
-                  />
+                  {currentUser?.avatarUrl ? (
+                    <img
+                      src={currentUser.avatarUrl}
+                      alt="Your Story"
+                      className="absolute bottom-8 left-1/2 h-12 w-12 -translate-x-1/2 rounded-full border-2 border-white object-cover sm:bottom-10 sm:h-16 sm:w-16"
+                    />
+                  ) : (
+                    <div className="absolute bottom-8 left-1/2 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-2 border-white bg-gray-200 text-sm font-semibold text-gray-600 sm:bottom-10 sm:h-16 sm:w-16 sm:text-lg">
+                      <User2 className="h-5 w-5 text-gray-400" />
+                    </div>
+                  )}
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-1.5 pt-6 pb-1.5 sm:px-2 sm:pt-8 sm:pb-2">
                     <p className="text-center text-[10px] font-semibold text-white sm:text-xs">
                       {story.name}
@@ -158,11 +166,17 @@ const Stories = () => {
                       {story.name}
                     </p>
                   </div>
-                  <img
-                    src={story.avatar}
-                    alt={story.name}
-                    className="absolute top-2 left-2 h-8 w-8 rounded-full border-2 border-blue-500 object-cover sm:top-3 sm:left-3 sm:h-10 sm:w-10"
-                  />
+                  {story.avatar ? (
+                    <img
+                      src={story.avatar}
+                      alt={story.name}
+                      className="absolute top-2 left-2 h-8 w-8 rounded-full border-2 border-blue-500 object-cover sm:top-3 sm:left-3 sm:h-10 sm:w-10"
+                    />
+                  ) : (
+                    <div className="absolute top-2 left-2 flex h-8 w-8 items-center justify-center rounded-full border-2 border-blue-500 bg-gray-200 text-xs font-semibold text-gray-600 sm:top-3 sm:left-3 sm:h-10 sm:w-10 sm:text-sm">
+                      {story.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
                 </>
               )}
             </div>

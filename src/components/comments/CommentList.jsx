@@ -21,6 +21,7 @@ export function CommentInputRow({
   onSubmit: submitHandler,
   placeholder = "Write a comment",
   avatarSrc = "/images/profile.png",
+  userName = "User",
 }) {
   const { register, handleSubmit, reset } = useForm({
     defaultValues: { content: "" },
@@ -32,14 +33,22 @@ export function CommentInputRow({
     reset();
   };
 
+  const initial = userName.charAt(0).toUpperCase();
+
   return (
     <form className="flex items-center gap-2.5" onSubmit={handleSubmit(submit)}>
-      <img
-        src={avatarSrc}
-        alt=""
-        className="h-8 w-8 shrink-0 rounded-full object-cover"
-        loading="lazy"
-      />
+      {avatarSrc ? (
+        <img
+          src={avatarSrc}
+          alt=""
+          className="h-8 w-8 shrink-0 rounded-full object-cover"
+          loading="lazy"
+        />
+      ) : (
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-600">
+          {initial}
+        </div>
+      )}
       <div className="flex flex-1 items-center gap-2 rounded-full border border-[#e7edf8] bg-[#f5f7fb] px-4 py-2">
         <input
           type="text"
@@ -98,7 +107,8 @@ function CommentList({ postId, totalCount = 0 }) {
       {/* Write a comment */}
       <CommentInputRow
         onSubmit={handleAddComment}
-        avatarSrc={currentUser?.avatarUrl || "/images/profile.png"}
+        avatarSrc={currentUser?.avatarUrl}
+        userName={currentUser?.firstName || "User"}
       />
 
       {loading ? (

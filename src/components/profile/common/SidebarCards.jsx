@@ -1,4 +1,4 @@
-import { Briefcase, GraduationCap, MapPin } from "lucide-react";
+import { Briefcase, GraduationCap, MapPin, User2 } from "lucide-react";
 
 export const IntroCard = ({ user = {} }) => {
   return (
@@ -74,11 +74,17 @@ export const FriendsPreview = ({ friends = [] }) => {
       <div className="grid grid-cols-2 gap-3">
         {friendsList.map((friend) => (
           <div key={friend.id} className="flex items-center gap-2">
-            <img
-              src={friend.avatarUrl || "/images/profile.png"}
-              className="h-10 w-10 rounded-full object-cover"
-              alt={`${friend.firstName} ${friend.lastName}`}
-            />
+            {friend.avatarUrl ? (
+              <img
+                src={friend.avatarUrl}
+                className="h-10 w-10 rounded-full object-cover"
+                alt={`${friend.firstName} ${friend.lastName}`}
+              />
+            ) : (
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-2xl font-semibold text-gray-600">
+                <User2 className="h-5 w-5 text-gray-400" />
+              </div>
+            )}
             <span className="text-sm font-medium">
               {friend.firstName} {friend.lastName}
             </span>

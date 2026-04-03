@@ -10,6 +10,7 @@ import {
   Pencil,
   Send,
   X,
+  User2,
 } from "lucide-react";
 import { createPost } from "../../features/posts/postsAPI";
 
@@ -85,11 +86,17 @@ function CreatePost() {
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Textarea row */}
         <div className="mb-4 flex items-start gap-2 sm:gap-3">
-          <img
-            src={avatarSrc}
-            alt="Your avatar"
-            className="h-9 w-9 shrink-0 rounded-full object-cover sm:h-11 sm:w-11"
-          />
+          {authUser?.avatarUrl ? (
+            <img
+              src={avatarSrc}
+              alt="Your avatar"
+              className="h-9 w-9 shrink-0 rounded-full object-cover sm:h-11 sm:w-11"
+            />
+          ) : (
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-600 sm:h-11 sm:w-11">
+              <User2 className="h-5 w-5 text-gray-400" />
+            </div>
+          )}
           <div className="relative flex-1">
             <textarea
               rows={3}

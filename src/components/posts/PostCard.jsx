@@ -13,6 +13,7 @@ import {
   Share2,
   ThumbsUp,
   Globe,
+  User2,
 } from "lucide-react";
 import { deletePost, togglePostLike } from "../../features/posts/postsAPI";
 import { patchPostLikeOptimistic } from "../../features/posts/postsSlice";
@@ -86,7 +87,7 @@ function PostCard({ post }) {
           {/* Letter Avatar */}
           <Link
             to={`/profile/${post.author?.id}`}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-200 text-base font-semibold text-[#acb2b9] sm:h-11 sm:w-11 sm:text-lg"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 bg-gray-100 text-base font-semibold text-[#acb2b9] sm:h-11 sm:w-11 sm:text-lg"
           >
             {post.author?.avatarUrl ? (
               <img
@@ -95,7 +96,7 @@ function PostCard({ post }) {
                 className="h-9 w-9 rounded-full object-cover sm:h-11 sm:w-11"
               />
             ) : (
-              (post.author?.firstName ?? "U").charAt(0).toUpperCase()
+              <User2 className="h-5 w-5 text-gray-400" />
             )}
           </Link>
 

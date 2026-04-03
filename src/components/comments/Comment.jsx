@@ -26,16 +26,28 @@ function Comment({ postId, comment }) {
     setReplyOpen(false);
   };
 
+  const authorName = comment.author?.firstName
+    ? `${comment.author.firstName} ${comment.author.lastName || ""}`.trim()
+    : comment.author?.name || "User";
+  const avatarUrl = comment.author?.avatarUrl;
+  const initial = authorName.charAt(0).toUpperCase();
+
   return (
     <div className="flex items-start gap-2">
       {/* Avatar */}
-      <Link to={`/profile/${comment.author?.id}`}>
-        <img
-          src={comment.author?.avatarUrl || "/images/comment_img.png"}
-          alt={comment.author?.name || "User"}
-          className="h-10 w-10 shrink-0 rounded-full object-cover"
-          loading="lazy"
-        />
+      <Link to={`/profile/${comment.author?.id}`} className="shrink-0">
+        {avatarUrl ? (
+          <img
+            src={avatarUrl}
+            alt={authorName}
+            className="h-10 w-10 rounded-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-600">
+            {initial}
+          </div>
+        )}
       </Link>
 
       <div className="min-w-0 flex-1">
@@ -45,7 +57,7 @@ function Comment({ postId, comment }) {
             to={`/profile/${comment.author?.id}`}
             className="mb-0.5 text-sm font-semibold text-[#112032] hover:underline"
           >
-            {comment.author?.name || "User"}
+            {authorName}
           </Link>
           <p className="text-sm leading-snug text-[#4c5a71]">
             {comment.content}
@@ -94,7 +106,8 @@ function Comment({ postId, comment }) {
             <CommentInputRow
               onSubmit={handleAddReply}
               placeholder="Write a comment"
-              avatarSrc={currentUser?.avatarUrl || "/images/profile.png"}
+              avatarSrc={currentUser?.avatarUrl}
+              userName={currentUser?.firstName || "User"}
             />
           </div>
         ) : null}
