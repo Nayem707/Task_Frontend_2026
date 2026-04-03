@@ -125,7 +125,10 @@ function Navbar() {
           </Link>
 
           {/* Friends */}
-          <Link to="/friends" className="rounded-xl p-2.5 hover:bg-[#f0f4ff]">
+          <Link
+            to="/profile/friends"
+            className="rounded-xl p-2.5 hover:bg-[#f0f4ff]"
+          >
             <Users size={22} className="text-gray-500" fill="none" />
           </Link>
 

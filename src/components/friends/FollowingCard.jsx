@@ -1,4 +1,5 @@
 import { UserMinus, UserPlus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function FollowingCard({ user, onUnfollow }) {
   const initial = user.name.charAt(0).toUpperCase();
@@ -6,19 +7,25 @@ function FollowingCard({ user, onUnfollow }) {
   return (
     <div className="flex items-center justify-between rounded-lg bg-white p-3 shadow-sm">
       <div className="flex items-center gap-3">
-        {user.avatarUrl ? (
-          <img
-            src={user.avatarUrl}
-            alt={user.name}
-            className="h-10 w-10 rounded-full object-cover"
-          />
-        ) : (
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-600">
-            {initial}
-          </div>
-        )}
+        <Link to={`/profile/${user.id}`}>
+          {user.avatarUrl ? (
+            <img
+              src={user.avatarUrl}
+              alt={user.name}
+              className="h-10 w-10 rounded-full object-cover"
+            />
+          ) : (
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-600">
+              {initial}
+            </div>
+          )}
+        </Link>
         <div>
-          <h3 className="text-sm font-semibold text-gray-900">{user.name}</h3>
+          <Link to={`/profile/${user.id}`}>
+            <h3 className="text-sm font-semibold text-gray-900 hover:underline">
+              {user.name}
+            </h3>
+          </Link>
           <p className="text-xs text-gray-500">{user.email}</p>
         </div>
       </div>

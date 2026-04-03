@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { formatDateTime, timeAgo } from "../../utils/helpers";
 import LikeButton from "../likes/LikeButton";
 import { Heart, MoreHorizontal, ThumbsUp } from "lucide-react";
@@ -35,7 +36,7 @@ function Reply({ reply, onToggleLike, postId, parentCommentId }) {
       {/* Header: Avatar + Author + Date + Menu */}
       <div className="flex gap-2">
         {/* Avatar */}
-        <div className="flex-shrink-0">
+        <Link to={`/profile/${reply.author?.id}`} className="shrink-0">
           {avatarUrl ? (
             <img
               src={avatarUrl}
@@ -47,7 +48,7 @@ function Reply({ reply, onToggleLike, postId, parentCommentId }) {
               {initial}
             </div>
           )}
-        </div>
+        </Link>
 
         {(reply.likesCount ?? 0) > 0 ? (
           <div className="absolute right-2 bottom-3 flex items-center gap-1 rounded-full border border-[#e7edf8] bg-white px-2 py-0.5 shadow-sm">
@@ -62,9 +63,12 @@ function Reply({ reply, onToggleLike, postId, parentCommentId }) {
             {/* Author + Date row */}
             <div className="rounded-xl bg-gray-50 px-3 py-2 text-sm text-gray-700">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-gray-900">
+                <Link
+                  to={`/profile/${reply.author?.id}`}
+                  className="text-sm font-semibold text-gray-900 hover:underline"
+                >
                   {authorName}
-                </span>
+                </Link>
               </div>
               <p className="mt-1 text-sm text-gray-700">{reply.content}</p>
             </div>

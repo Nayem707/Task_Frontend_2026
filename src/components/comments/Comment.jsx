@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   addReply,
   toggleCommentLike,
@@ -28,19 +29,24 @@ function Comment({ postId, comment }) {
   return (
     <div className="flex items-start gap-2">
       {/* Avatar */}
-      <img
-        src={comment.author?.avatarUrl || "/images/comment_img.png"}
-        alt={comment.author?.name || "User"}
-        className="h-10 w-10 shrink-0 rounded-full object-cover"
-        loading="lazy"
-      />
+      <Link to={`/profile/${comment.author?.id}`}>
+        <img
+          src={comment.author?.avatarUrl || "/images/comment_img.png"}
+          alt={comment.author?.name || "User"}
+          className="h-10 w-10 shrink-0 rounded-full object-cover"
+          loading="lazy"
+        />
+      </Link>
 
       <div className="min-w-0 flex-1">
         {/* Bubble */}
         <div className="relative rounded-xl bg-[#f5f7fb] px-3 py-2.5">
-          <p className="mb-0.5 text-sm font-semibold text-[#112032]">
+          <Link
+            to={`/profile/${comment.author?.id}`}
+            className="mb-0.5 text-sm font-semibold text-[#112032] hover:underline"
+          >
             {comment.author?.name || "User"}
-          </p>
+          </Link>
           <p className="text-sm leading-snug text-[#4c5a71]">
             {comment.content}
           </p>

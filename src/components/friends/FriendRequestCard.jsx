@@ -1,15 +1,22 @@
 import { UserCheck, X } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function FriendRequestCard({ request, onAccept, onDecline }) {
   return (
     <div className="overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-md">
-      <img
-        src={request.avatar}
-        alt={request.name}
-        className="h-40 w-full object-cover"
-      />
+      <Link to={`/profile/${request.id}`}>
+        <img
+          src={request.avatar}
+          alt={request.name}
+          className="h-40 w-full object-cover"
+        />
+      </Link>
       <div className="p-3">
-        <h3 className="font-semibold text-gray-900">{request.name}</h3>
+        <Link to={`/profile/${request.id}`}>
+          <h3 className="font-semibold text-gray-900 hover:underline">
+            {request.name}
+          </h3>
+        </Link>
         <p className="text-xs text-gray-500">@{request.username}</p>
         <p className="mt-1 text-xs text-gray-500">
           {request.mutualFriends} mutual friends

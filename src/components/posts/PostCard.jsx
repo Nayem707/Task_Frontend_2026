@@ -1,5 +1,6 @@
 import { memo, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const EMPTY_ARRAY = [];
 import toast from "react-hot-toast";
@@ -83,7 +84,10 @@ function PostCard({ post }) {
       <div className="mb-3 flex items-start justify-between gap-2 px-6">
         <div className="flex items-center gap-3">
           {/* Letter Avatar */}
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-lg font-semibold text-[#acb2b9]">
+          <Link
+            to={`/profile/${post.author?.id}`}
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-lg font-semibold text-[#acb2b9]"
+          >
             {post.author?.avatarUrl ? (
               <img
                 src={post.author.avatarUrl}
@@ -93,14 +97,17 @@ function PostCard({ post }) {
             ) : (
               (post.author?.firstName ?? "U").charAt(0).toUpperCase()
             )}
-          </div>
+          </Link>
 
           <div>
-            <p className="text-sm font-semibold text-[#112032]">
+            <Link
+              to={`/profile/${post.author?.id}`}
+              className="text-sm font-semibold text-[#112032] hover:underline"
+            >
               {post.author?.firstName
                 ? `${post.author.firstName} ${post.author.lastName ?? ""}`.trim()
                 : post.author?.name || "Unknown Author"}
-            </p>
+            </Link>
             <p className="flex gap-1 text-xs text-[#79879d]">
               <span>{formatDateTime(post.createdAt)} ● </span>
               <a href="#" className="hover:underline">

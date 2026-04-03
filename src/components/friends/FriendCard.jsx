@@ -1,15 +1,22 @@
 import { UserMinus, MoreHorizontal } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function FriendCard({ friend, onRemove }) {
   return (
     <div className="overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-md">
-      <img
-        src={friend.avatar}
-        alt={friend.name}
-        className="h-40 w-full object-cover"
-      />
+      <Link to={`/profile/${friend.id}`}>
+        <img
+          src={friend.avatar}
+          alt={friend.name}
+          className="h-40 w-full object-cover"
+        />
+      </Link>
       <div className="p-3">
-        <h3 className="font-semibold text-gray-900">{friend.name}</h3>
+        <Link to={`/profile/${friend.id}`}>
+          <h3 className="font-semibold text-gray-900 hover:underline">
+            {friend.name}
+          </h3>
+        </Link>
         <p className="text-xs text-gray-500">@{friend.username}</p>
         <p className="mt-1 text-xs text-gray-500">
           {friend.mutualFriends} mutual friends
