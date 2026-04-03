@@ -9,6 +9,10 @@ import {
   MessageSquare,
   Share2,
   Smile,
+  WholeWord,
+  Map,
+  EarthIcon,
+  Globe,
 } from "lucide-react";
 import { deletePost, togglePostLike } from "../../features/posts/postsAPI";
 import { patchPostLikeOptimistic } from "../../features/posts/postsSlice";
@@ -99,10 +103,25 @@ function PostCard({ post }) {
                 ? `${post.author.firstName} ${post.author.lastName ?? ""}`.trim()
                 : post.author?.name || "Unknown Author"}
             </p>
-            <p className="text-xs text-[#79879d]">
-              {formatDateTime(post.createdAt)} .{" "}
+            <p className="flex gap-1 text-xs text-[#79879d]">
+              <span>{formatDateTime(post.createdAt)} ● </span>
               <a href="#" className="hover:underline">
-                {post.visibility || "Public"}
+                {post.visibility === "PUBLIC" ? (
+                  <span className="flex items-center">
+                    <Globe size={12} className="mr-1" />
+                    Public
+                  </span>
+                ) : post.visibility === "PRIVATE" ? (
+                  <span className="flex items-center">
+                    <Lock size={12} className="mr-1" />
+                    Friends
+                  </span>
+                ) : (
+                  <span className="flex items-center">
+                    <EyeOff size={12} className="mr-1" />
+                    Only Me
+                  </span>
+                )}
               </a>
             </p>
           </div>

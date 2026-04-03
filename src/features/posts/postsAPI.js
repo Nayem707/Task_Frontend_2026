@@ -116,7 +116,7 @@ export const fetchPostById = createAsyncThunk(
 export const createPost = createAsyncThunk(
   "posts/createPost",
   async (
-    { content, visibility = "PUBLIC", image },
+    { content, visibility = "PUBLIC", images = [] },
     { rejectWithValue, signal }
   ) =>
     apiExecutor(
@@ -124,7 +124,7 @@ export const createPost = createAsyncThunk(
         const formData = new FormData();
         formData.append("content", content);
         formData.append("visibility", visibility);
-        if (image) formData.append("image", image);
+        images.forEach((file) => formData.append("image", file));
         const response = await POST(ENDPOINT.POSTS.CREATE, formData, signal);
         return normalizePost(response.data.data);
       },
