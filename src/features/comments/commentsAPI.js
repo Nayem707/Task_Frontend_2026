@@ -3,6 +3,31 @@ import { GET, POST, PUT, DELETE } from "../../services/httpMethods";
 import { ENDPOINT } from "../../services/httpEndpoint";
 import { apiExecutor } from "../../services/apiExecutor";
 
+const normalizeComment = (c) => ({
+  ...c,
+  author: c.user
+    ? {
+        id: c.user.id,
+        name: [c.user.firstName, c.user.lastName].filter(Boolean).join(" "),
+        avatarUrl: c.user.avatarUrl || null,
+      }
+    : c.author ?? null,
+  likedByMe: c.likedByMe ?? false,
+  likesCount: c._count?.likes ?? c.likesCount ?? 0,
+  replies: (c.replies ?? []).map((r) => ({
+    ...r,
+    author: r.user
+      ? {
+          id: r.user.id,
+          name: [r.user.firstName, r.user.lastName].filter(Boolean).join(" "),
+          avatarUrl: r.user.avatarUrl || null,
+        }
+      : r.author ?? null,
+    likedByMe: r.likedByMe ?? false,
+    likesCount: r._count?.likes ?? r.likesCount ?? 0,
+  })),
+});
+
 // ✅ Fetch comments for a post
 export const fetchCommentsByPost = createAsyncThunk(
   "comments/fetchCommentsByPost",
@@ -14,7 +39,10 @@ export const fetchCommentsByPost = createAsyncThunk(
           undefined,
           signal
         );
-        return { postId, comments: response.data.data || [] };
+        return {
+          postId,
+          comments: (response.data.data || []).map(normalizeComment),
+        };
       },
       rejectWithValue,
       signal
@@ -32,7 +60,7 @@ export const addComment = createAsyncThunk(
           { content },
           signal
         );
-        return { postId, comment: response.data.data };
+        return { postId, comment: normalizeComment(response.data.data) };
       },
       rejectWithValue,
       signal

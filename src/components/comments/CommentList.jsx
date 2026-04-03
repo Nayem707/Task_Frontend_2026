@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const EMPTY_ARRAY = [];
 import { useForm } from "react-hook-form";
-import { Mic, Smile } from "lucide-react";
+import { ChevronDown, ChevronUp, Mic, Smile } from "lucide-react";
 import {
   addComment,
   fetchCommentsByPost,
@@ -98,13 +98,22 @@ function CommentList({ postId, totalCount = 0 }) {
       ) : null}
 
       {/* View previous comments toggle */}
-      {!showAll && hiddenCount > 0 ? (
+      {hiddenCount > 0 ? (
         <button
           type="button"
-          onClick={() => setShowAll(true)}
+          onClick={() => setShowAll((v) => !v)}
           className="text-sm font-medium text-[#738098] hover:text-[#112032]"
         >
-          View {hiddenCount} previous comment{hiddenCount !== 1 ? "s" : ""}
+          {showAll ? (
+            <>
+              Hide previous comments <ChevronUp size={14} className="inline" />
+            </>
+          ) : (
+            <>
+              View {hiddenCount} previous comment{hiddenCount !== 1 ? "s" : ""}{" "}
+              <ChevronDown size={14} className="inline" />
+            </>
+          )}
         </button>
       ) : null}
 

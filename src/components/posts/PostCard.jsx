@@ -10,7 +10,7 @@ import {
   MoreVertical,
   MessageSquare,
   Share2,
-  Smile,
+  ThumbsUp,
   Globe,
 } from "lucide-react";
 import { deletePost, togglePostLike } from "../../features/posts/postsAPI";
@@ -274,17 +274,18 @@ function PostCard({ post }) {
       </div>
 
       {/* Reaction Buttons */}
-      <div className="flex items-center border-y border-[#edf1f7] px-2 py-1">
+      <div className="flex items-center gap-2 border-y border-[#edf1f7] px-2 py-1">
         <button
           type="button"
           onClick={handleToggleLike}
           className={`flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-sm font-medium transition ${post.likedByMe ? "bg-[#EBF3FF] text-[#377DFF]" : "text-[#4c5a71] hover:bg-[#f3f7ff]"}`}
         >
-          <Smile
+          <ThumbsUp
             size={20}
-            className={post.likedByMe ? "text-[#377DFF]" : "text-[#FFCC4D]"}
+            fill={post.likedByMe ? "#377DFF" : "none"}
+            className={post.likedByMe ? "text-[#377DFF]" : "text-[#4c5a71]"}
           />
-          Haha
+          Like
         </button>
         <button
           type="button"
@@ -318,6 +319,7 @@ function PostCard({ post }) {
       ) : null}
 
       <Modal
+        maxWidth="2xl"
         title="Liked by"
         open={likesOpen}
         onClose={() => setLikesOpen(false)}

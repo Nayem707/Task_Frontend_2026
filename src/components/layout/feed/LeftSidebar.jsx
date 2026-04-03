@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { GET, POST } from "../../../services/httpMethods";
 import { ENDPOINT } from "../../../services/httpEndpoint";
+import { UserPlus } from "lucide-react";
 
 const exploreItems = [
   {
@@ -290,6 +291,7 @@ function LeftSidebar() {
                     disabled={followLoadingId === person.id}
                     className="shrink-0 rounded-xl border border-blue-500 px-3 py-1 text-xs font-semibold text-blue-500 hover:bg-[#f3f7ff] disabled:cursor-not-allowed disabled:opacity-60"
                   >
+                    <UserPlus className="inline-block" size={14} />{" "}
                     {followLoadingId === person.id ? "..." : "Follow"}
                   </button>
                 </div>
