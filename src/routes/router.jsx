@@ -8,14 +8,15 @@ import {
 import PublicGuard from "./PublicGuard";
 import PrivateGuard from "./PrivateGuard";
 
-import FeedView from "../pages/private/FeedView";
 import LoginView from "../pages/auth/LoginView";
 import RegisterView from "../pages/auth/RegisterView";
 import FeedLayout from "../components/layout/feed/FeedLayout";
-import ProfileView from "../pages/private/ProfileView";
-import FollowersView from "../pages/private/FollowersView";
+import FeedView from "../pages/private/FeedView";
 import ProfileLayout from "../components/layout/profile/ProfileLayout";
+import ProfileView from "../pages/private/ProfileView";
+
 import NotFoundView from "../pages/error/NotFoundView";
+import FriendsView from "../pages/private/FriendsView";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -34,7 +35,7 @@ const router = createBrowserRouter(
 
         <Route path="/profile" element={<ProfileLayout />}>
           <Route index element={<ProfileView />} />
-          <Route path="followers" element={<FollowersView />} />
+          <Route path="friends" element={<FriendsView />} />
           <Route path=":userId" element={<ProfileView />} />
         </Route>
       </Route>
