@@ -255,34 +255,40 @@ function LeftSidebar() {
               <p className="text-xs text-[#7c889d]">Loading users...</p>
             ) : (
               suggestedPeople.map((person) => (
-                <div key={person.id} className="flex items-center gap-3">
-                  <div className="h-11 w-11 shrink-0">
-                    {person.image && person.image !== "/images/profile.png" ? (
-                      <img
-                        src={person.image}
-                        alt={person.name}
-                        className="h-11 w-11 rounded-full object-cover"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-lg font-semibold text-[#acb2b9]">
-                        {person.name?.charAt(0).toUpperCase() || "U"}
-                      </div>
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-[#112032]">
-                      {person.name}
-                    </p>
-                    <p className="truncate text-xs text-[#7c889d]">
-                      {person.title}
-                    </p>
+                <div
+                  key={person.id}
+                  className="flex items-center justify-between gap-3"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="h-11 w-11 shrink-0">
+                      {person.image &&
+                      person.image !== "/images/profile.png" ? (
+                        <img
+                          src={person.image}
+                          alt={person.name}
+                          className="h-11 w-11 rounded-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-lg font-semibold text-[#acb2b9]">
+                          {person.name?.charAt(0).toUpperCase() || "U"}
+                        </div>
+                      )}
+                    </div>
+                    <div className="max-w-[100px] min-w-0">
+                      <p className="text-sm font-semibold text-[#112032]">
+                        {person.name}
+                      </p>
+                      <p className="truncate text-xs text-[#7c889d]">
+                        {person.title}
+                      </p>
+                    </div>
                   </div>
                   <button
                     type="button"
                     onClick={() => handleToggleFollow(person.id)}
                     disabled={followLoadingId === person.id}
-                    className="shrink-0 rounded-lg border border-[#c6d4e8] px-3 py-1 text-xs font-semibold text-[#4c5a71] hover:bg-[#f3f7ff] disabled:cursor-not-allowed disabled:opacity-60"
+                    className="shrink-0 rounded-xl border border-blue-500 px-3 py-1 text-xs font-semibold text-blue-500 hover:bg-[#f3f7ff] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {followLoadingId === person.id ? "..." : "Follow"}
                   </button>
@@ -294,7 +300,7 @@ function LeftSidebar() {
       ) : null}
 
       {/* Events */}
-      <section className="app-card px-6 py-6">
+      <section className="app-card p-4">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-base font-semibold text-[#112032]">Events</h3>
           <a href="#" className="text-xs font-semibold text-[#377DFF]">
@@ -303,7 +309,7 @@ function LeftSidebar() {
         </div>
         {[1, 2].map((i) => (
           <a key={i} href="#" className="mb-4 block last:mb-0">
-            <div className="overflow-hidden rounded-xl border border-[#e8ebf0]">
+            <div className="overflow-hidden rounded-lg border border-[#e8ebf0]">
               <img
                 src="/images/feed_event1.png"
                 alt="Event"

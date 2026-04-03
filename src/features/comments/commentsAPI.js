@@ -12,13 +12,13 @@ export const fetchCommentsByPost = createAsyncThunk(
         const response = await GET(
           ENDPOINT.COMMENTS.LIST(postId),
           undefined,
-          signal,
+          signal
         );
         return { postId, comments: response.data.data || [] };
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
 // ✅ Add a comment to a post
@@ -30,13 +30,13 @@ export const addComment = createAsyncThunk(
         const response = await POST(
           ENDPOINT.COMMENTS.CREATE(postId),
           { content },
-          signal,
+          signal
         );
         return { postId, comment: response.data.data };
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
 // ✅ Update a comment
@@ -48,13 +48,13 @@ export const updateComment = createAsyncThunk(
         const response = await PUT(
           ENDPOINT.COMMENTS.UPDATE(commentId),
           { content },
-          signal,
+          signal
         );
         return { postId, commentId, comment: response.data.data };
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
 // ✅ Delete a comment
@@ -67,8 +67,8 @@ export const deleteComment = createAsyncThunk(
         return { postId, commentId };
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
 // ✅ Fetch replies for a comment
@@ -80,13 +80,13 @@ export const fetchCommentReplies = createAsyncThunk(
         const response = await GET(
           ENDPOINT.COMMENTS.LIST_REPLIES(commentId),
           undefined,
-          signal,
+          signal
         );
         return { postId, commentId, replies: response.data.data || [] };
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
 // ✅ Add a reply to a comment
@@ -98,13 +98,13 @@ export const addReply = createAsyncThunk(
         const response = await POST(
           ENDPOINT.COMMENTS.ADD_REPLY(parentCommentId),
           { content },
-          signal,
+          signal
         );
         return { postId, parentCommentId, reply: response.data.data };
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
 // ✅ Toggle like on a comment
@@ -114,13 +114,13 @@ export const toggleCommentLike = createAsyncThunk(
     apiExecutor(
       async () => {
         const response = await POST(
-          ENDPOINT.LIKES.TOGGLE_COMMENT(commentId),
+          ENDPOINT.COMMENTS.TOGGLE_LIKE(commentId),
           undefined,
-          signal,
+          signal
         );
         return { postId, commentId, liked: response.data.data.liked };
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );

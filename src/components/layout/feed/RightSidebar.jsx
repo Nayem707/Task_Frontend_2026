@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { GET } from "../../../services/httpMethods";
+import { GET, POST } from "../../../services/httpMethods";
 import { ENDPOINT } from "../../../services/httpEndpoint";
+import { UserMinus } from "lucide-react";
 
 const RightSidebar = () => {
   const user = useSelector((state) => state.auth.user);
   const [query, setQuery] = useState("");
   const [followingUsers, setFollowingUsers] = useState([]);
   const [loadingFollowing, setLoadingFollowing] = useState(true);
+  const [unfollowLoadingId, setUnfollowLoadingId] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -53,6 +55,18 @@ const RightSidebar = () => {
       isMounted = false;
     };
   }, [user?.id]);
+
+  const handleUnfollow = async (userId) => {
+    try {
+      setUnfollowLoadingId(userId);
+      await POST(ENDPOINT.USERS.TOGGLE_FOLLOW(userId));
+      setFollowingUsers((prev) => prev.filter((p) => p.id !== userId));
+    } catch (error) {
+      console.error("Failed to unfollow", error);
+    } finally {
+      setUnfollowLoadingId(null);
+    }
+  };
 
   const filteredFollowing = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -148,7 +162,10 @@ const RightSidebar = () => {
         ) : (
           <ul className="space-y-4">
             {filteredFollowing.map((person) => (
-              <li key={person.id} className="flex items-center justify-between">
+              <li
+                key={person.id}
+                className="flex items-center justify-between gap-4"
+              >
                 <div className="flex items-center gap-2">
                   <div className="relative h-12 w-12 shrink-0">
                     {person.avatarUrl &&
@@ -166,13 +183,32 @@ const RightSidebar = () => {
                     )}
                     <span className="absolute right-0 bottom-0 h-3 w-3 rounded-full border-2 border-white bg-green-500" />
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-[#112032]">
+
+                  <div className="max-w-[100px] min-w-0">
+                    <p className="truncate text-sm font-semibold text-[#112032]">
                       {person.name}
                     </p>
-                    <p className="text-xs text-[#738098]">{person.title}</p>
+                    <p className="truncate text-xs text-[#738098]">
+                      {person.title}
+                    </p>
                   </div>
                 </div>
+                <button
+                  onClick={() => handleUnfollow(person.id)}
+                  disabled={unfollowLoadingId === person.id}
+                  className="flex items-center gap-1 rounded-xl border border-gray-300 bg-white px-2 py-1 text-xs font-medium text-gray-700 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {unfollowLoadingId === person.id ? (
+                    <div className="h-2 w-2 animate-spin rounded-full border border-red-600 border-t-transparent" />
+                  ) : (
+                    <UserMinus size={12} />
+                  )}
+                  <span>
+                    {unfollowLoadingId === person.id
+                      ? "Unfollowing"
+                      : "Unfollow"}
+                  </span>
+                </button>
               </li>
             ))}
           </ul>

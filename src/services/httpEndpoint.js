@@ -27,6 +27,7 @@ export const ENDPOINT = {
     DELETE: (commentId) => `/comments/${commentId}`,
     LIST_REPLIES: (commentId) => `/comments/${commentId}/replies`,
     ADD_REPLY: (commentId) => `/comments/${commentId}/replies`,
+    TOGGLE_LIKE: (commentId) => `/comments/${commentId}/like`,
   },
   LIKES: {
     TOGGLE_POST: (postId) => `/likes/posts/${postId}/toggle`,

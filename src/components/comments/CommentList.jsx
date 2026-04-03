@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+const EMPTY_ARRAY = [];
 import { useForm } from "react-hook-form";
 import { Mic, Smile } from "lucide-react";
 import {
@@ -69,7 +71,7 @@ function CommentList({ postId, totalCount = 0 }) {
   const dispatch = useDispatch();
   const [showAll, setShowAll] = useState(false);
   const comments = useSelector(
-    (state) => state.comments.byPostId[postId] || []
+    (state) => state.comments.byPostId[postId] ?? EMPTY_ARRAY
   );
   const loading = useSelector(
     (state) => state.comments.loadingByPostId[postId]

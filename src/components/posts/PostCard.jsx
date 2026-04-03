@@ -1,5 +1,7 @@
-import { memo, useState } from "react";
+import { memo, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+const EMPTY_ARRAY = [];
 import toast from "react-hot-toast";
 import {
   Bookmark,
@@ -9,9 +11,6 @@ import {
   MessageSquare,
   Share2,
   Smile,
-  WholeWord,
-  Map,
-  EarthIcon,
   Globe,
 } from "lucide-react";
 import { deletePost, togglePostLike } from "../../features/posts/postsAPI";
@@ -29,7 +28,7 @@ function PostCard({ post }) {
   const [commentsOpen, setCommentsOpen] = useState(false);
   const key = `post:${post.id}`;
   const likesUsers = useSelector(
-    (state) => state.likes.likesByEntity[key] || []
+    (state) => state.likes.likesByEntity[key] ?? EMPTY_ARRAY
   );
   const imageUrls =
     post.images?.length > 0
@@ -56,6 +55,12 @@ function PostCard({ post }) {
     }
   };
 
+  useEffect(() => {
+    if (post.likesCount > 0) {
+      dispatch(fetchLikesList({ entityType: "post", entityId: post.id }));
+    }
+  }, [dispatch, post.id, post.likesCount]);
+
   const handleOpenLikes = async () => {
     setLikesOpen(true);
     dispatch(fetchLikesList({ entityType: "post", entityId: post.id }));
@@ -70,14 +75,6 @@ function PostCard({ post }) {
       toast.error("Could not delete post");
     }
   };
-
-  const reactImages = [
-    "/images/react_img1.png",
-    "/images/react_img2.png",
-    "/images/react_img3.png",
-    "/images/react_img4.png",
-    "/images/react_img5.png",
-  ];
 
   return (
     <article className="app-card mb-4 overflow-hidden pt-4">
@@ -229,28 +226,39 @@ function PostCard({ post }) {
       {/* Reaction counts */}
       <div className="mb-4 flex items-center justify-between px-6">
         <div className="flex items-center gap-1">
-          <div className="flex -space-x-1">
-            {reactImages.slice(0, 5).map((src, i) => (
-              <img
-                key={i}
-                src={src}
-                alt=""
-                className="h-6 w-6 rounded-full border-2 border-white object-cover"
-                loading="lazy"
-              />
-            ))}
+          {likesUsers.length > 0 && (
+            <div className="mt-3 flex -space-x-2 overflow-hidden">
+              {likesUsers.slice(0, 5).map((u) =>
+                u.avatarUrl ? (
+                  <img
+                    key={u.id}
+                    className="inline-block h-6 w-6 rounded-full object-cover ring-2 ring-white"
+                    src={u.avatarUrl}
+                    alt={u.name || "User"}
+                  />
+                ) : (
+                  <div
+                    key={u.id}
+                    className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#d0d9e8] text-[12px] font-semibold text-[#aeb6c4] ring-2 ring-white"
+                  >
+                    {(u.name || "U").charAt(0).toUpperCase()}
+                  </div>
+                )
+              )}
+            </div>
+          )}
+          <div className="mt-3 text-sm font-medium">
+            <button
+              type="button"
+              onClick={handleOpenLikes}
+              className="ml-1 text-xs text-[#738098] hover:text-[#112032]"
+            >
+              {post.likesCount > 0 ? `${post.likesCount} ` : "0 "}
+              Like
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={handleOpenLikes}
-            className="ml-1 text-xs text-[#738098] hover:text-[#112032]"
-          >
-            Like{" "}
-            {post.likesCount > 0
-              ? `${post.likesCount > 9 ? "9+" : post.likesCount}`
-              : ""}
-          </button>
         </div>
+
         <div className="flex items-center gap-4 text-xs text-[#738098]">
           <span>
             <span className="font-semibold text-[#112032]">
