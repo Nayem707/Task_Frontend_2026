@@ -73,6 +73,9 @@ function CommentList({ postId, totalCount = 0 }) {
   const comments = useSelector(
     (state) => state.comments.byPostId[postId] ?? EMPTY_ARRAY
   );
+
+  console.log("comment: ", comments);
+
   const loading = useSelector(
     (state) => state.comments.loadingByPostId[postId]
   );

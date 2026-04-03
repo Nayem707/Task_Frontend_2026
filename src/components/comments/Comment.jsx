@@ -7,6 +7,7 @@ import {
 import { timeAgo } from "../../utils/helpers";
 import { CommentInputRow } from "./CommentList";
 import Reply from "./Reply";
+import { ThumbsUp } from "lucide-react";
 
 function Comment({ postId, comment }) {
   const dispatch = useDispatch();
@@ -45,14 +46,9 @@ function Comment({ postId, comment }) {
 
           {/* Reaction badge — bottom-right corner */}
           {(comment.likesCount ?? 0) > 0 ? (
-            <div className="absolute right-3 -bottom-3.5 flex items-center gap-1 rounded-full border border-[#e7edf8] bg-white px-2 py-0.5 shadow-sm">
-              <img src="/images/react_img1.png" alt="" className="h-4 w-4" />
-              <img
-                src="/images/react_img2.png"
-                alt=""
-                className="-ml-1.5 h-4 w-4"
-              />
-              <span className="ml-0.5 text-xs text-[#738098]">
+            <div className="absolute right-2 -bottom-3 flex items-center gap-1 rounded-full border border-[#e7edf8] bg-white px-2 py-0.5 shadow-sm">
+              <ThumbsUp size={12} className="text-[#377DFF]" />
+              <span className="text-xs text-[#738098]">
                 {comment.likesCount}
               </span>
             </div>
