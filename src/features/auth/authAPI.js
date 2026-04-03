@@ -13,36 +13,41 @@ export const login = createAsyncThunk(
         const response = await POST(
           ENDPOINT.AUTH.LOGIN,
           { email, password },
-          signal,
+          signal
         );
         const { user, tokens } = response.data.data;
         setCookie(TOKEN_KEY, tokens.accessToken);
-        if (tokens.refreshToken) setCookie(REFRESH_TOKEN_KEY, tokens.refreshToken);
+        if (tokens.refreshToken)
+          setCookie(REFRESH_TOKEN_KEY, tokens.refreshToken);
         return user;
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
 export const register = createAsyncThunk(
   "auth/register",
-  async ({ email, password, name }, { rejectWithValue, signal }) =>
+  async (
+    { firstName, lastName, email, password },
+    { rejectWithValue, signal }
+  ) =>
     apiExecutor(
       async () => {
         const response = await POST(
           ENDPOINT.AUTH.REGISTER,
-          { email, password, name },
-          signal,
+          { firstName, lastName, email, password },
+          signal
         );
         const { user, tokens } = response.data.data;
         setCookie(TOKEN_KEY, tokens.accessToken);
-        if (tokens.refreshToken) setCookie(REFRESH_TOKEN_KEY, tokens.refreshToken);
+        if (tokens.refreshToken)
+          setCookie(REFRESH_TOKEN_KEY, tokens.refreshToken);
         return user;
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
 export const logout = createAsyncThunk(
@@ -55,8 +60,8 @@ export const logout = createAsyncThunk(
         deleteCookie(REFRESH_TOKEN_KEY);
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
 export const getProfile = createAsyncThunk(
@@ -68,6 +73,6 @@ export const getProfile = createAsyncThunk(
         return response.data;
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );

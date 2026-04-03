@@ -20,6 +20,8 @@ function RegisterView() {
     formState: { errors },
   } = useForm({
     defaultValues: {
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -27,9 +29,11 @@ function RegisterView() {
     },
   });
 
-  const onSubmit = async ({ email, password }) => {
+  const onSubmit = async ({ firstName, lastName, email, password }) => {
     try {
-      await dispatch(registerUser({ email, password })).unwrap();
+      await dispatch(
+        registerUser({ firstName, lastName, email, password })
+      ).unwrap();
       toast.success("Account created");
       navigate(ROUTES.FEED, { replace: true });
     } catch (error) {
@@ -94,6 +98,36 @@ function RegisterView() {
             className="space-y-3 sm:space-y-4"
             onSubmit={handleSubmit(onSubmit)}
           >
+            <div className="flex gap-4">
+              <Input
+                label="First Name"
+                type="text"
+                placeholder="John"
+                error={errors.firstName?.message}
+                {...register("firstName", {
+                  required: "First name is required.",
+                  minLength: {
+                    value: 2,
+                    message: "First name must be at least 2 characters.",
+                  },
+                })}
+              />
+
+              <Input
+                label="Last Name"
+                type="text"
+                placeholder="Doe"
+                error={errors.lastName?.message}
+                {...register("lastName", {
+                  required: "Last name is required.",
+                  minLength: {
+                    value: 2,
+                    message: "Last name must be at least 2 characters.",
+                  },
+                })}
+              />
+            </div>
+
             <Input
               label="Email"
               type="email"
