@@ -84,7 +84,14 @@ const ProfileView = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case "posts":
-        return <PostsTab posts={posts} user={user} loading={loading} />;
+        return (
+          <PostsTab
+            posts={posts}
+            user={user}
+            currentUser={currentUser}
+            loading={loading}
+          />
+        );
       case "about":
         return <AboutTab user={user} />;
       case "friends":

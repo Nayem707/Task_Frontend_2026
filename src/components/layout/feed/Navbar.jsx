@@ -12,9 +12,39 @@ import {
   HelpCircle,
   LogOut,
   ChevronRight,
+  Heart,
+  MessageSquare,
+  UserPlus,
+  AtSign,
 } from "lucide-react";
 import { logout } from "../../../features/auth/authAPI";
 import { ROUTES } from "../../../utils/constants";
+import {
+  fetchNotifications,
+  markNotificationRead,
+  markAllNotificationsRead,
+} from "../../../features/notifications/notificationsAPI";
+import { fetchConversations } from "../../../features/messages/messagesAPI";
+
+const NOTIFICATION_ICONS = {
+  LIKE: <Heart size={14} className="text-red-400" />,
+  COMMENT: <MessageSquare size={14} className="text-blue-400" />,
+  FOLLOW: <UserPlus size={14} className="text-green-400" />,
+  MESSAGE: <MessageCircle size={14} className="text-purple-400" />,
+  MENTION: <AtSign size={14} className="text-yellow-500" />,
+  GROUP_INVITE: <Users size={14} className="text-indigo-400" />,
+  STORY_REACTION: <Heart size={14} className="text-pink-400" />,
+};
+
+function timeAgo(dateStr) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
 
 function Navbar() {
   const dispatch = useDispatch();
@@ -22,10 +52,31 @@ function Navbar() {
   const user = useSelector((state) => state.auth.user);
   const fullName = user ? `${user.firstName} ${user.lastName}` : "";
   const avatarSrc = user?.avatarUrl || "/images/profile.png";
+
+  const {
+    items: notifications,
+    unreadCount: notifyCount,
+    loading: notifyLoading,
+  } = useSelector((state) => state.notifications);
+  const { conversations, loading: chatLoading } = useSelector(
+    (state) => state.messages
+  );
+  const chatUnread = conversations.filter(
+    (c) =>
+      c.lastMessage?.receiverId === user?.id && c.lastMessage?.status !== "READ"
+  ).length;
+
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifyOpen, setNotifyOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   const profileRef = useRef(null);
   const notifyRef = useRef(null);
+  const chatRef = useRef(null);
+
+  useEffect(() => {
+    dispatch(fetchNotifications());
+    dispatch(fetchConversations());
+  }, [dispatch]);
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -34,6 +85,9 @@ function Navbar() {
       }
       if (notifyRef.current && !notifyRef.current.contains(e.target)) {
         setNotifyOpen(false);
+      }
+      if (chatRef.current && !chatRef.current.contains(e.target)) {
+        setChatOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -82,9 +136,11 @@ function Navbar() {
               className="relative rounded-xl p-2.5 hover:bg-[#f0f4ff]"
             >
               <Bell size={22} className="text-gray-500" fill="none" />
-              <span className="absolute -top-0.5 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-[#FF6B6B] text-[10px] font-bold text-white">
-                6
-              </span>
+              {notifyCount > 0 && (
+                <span className="absolute -top-0.5 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-[#FF6B6B] text-[10px] font-bold text-white">
+                  {notifyCount > 99 ? "99+" : notifyCount}
+                </span>
+              )}
             </button>
 
             {/* Notifications Dropdown */}
@@ -94,38 +150,53 @@ function Navbar() {
                   <h4 className="font-semibold text-[#112032]">
                     Notifications
                   </h4>
+                  {notifyCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => dispatch(markAllNotificationsRead())}
+                      className="text-xs text-[#377DFF] hover:underline"
+                    >
+                      Mark all as read
+                    </button>
+                  )}
                 </div>
                 <div className="max-h-[80vh] divide-y divide-[#f0f3f8] overflow-y-auto">
-                  {[
-                    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
-                    18, 19, 20,
-                  ].map((i) => (
+                  {notifyLoading && (
+                    <div className="px-4 py-6 text-center text-sm text-[#9aa5b8]">
+                      Loading…
+                    </div>
+                  )}
+                  {!notifyLoading && notifications.length === 0 && (
+                    <div className="px-4 py-6 text-center text-sm text-[#9aa5b8]">
+                      No notifications yet
+                    </div>
+                  )}
+                  {notifications.map((n) => (
                     <div
-                      key={i}
-                      className="flex cursor-pointer items-start gap-3 px-4 py-3 hover:bg-[#f5f7fb]"
+                      key={n.id}
+                      onClick={() => {
+                        if (!n.isRead) dispatch(markNotificationRead(n.id));
+                      }}
+                      className={`flex cursor-pointer items-start gap-3 px-4 py-3 hover:bg-[#f5f7fb] ${
+                        !n.isRead ? "bg-[#f0f6ff]" : ""
+                      }`}
                     >
-                      <img
-                        src={
-                          i % 2 === 0
-                            ? "/images/profile-1.png"
-                            : "/images/friend-req.png"
-                        }
-                        className="h-9 w-9 shrink-0 rounded-full object-cover"
-                        alt=""
-                      />
-                      <div>
+                      <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#eef2ff]">
+                        {NOTIFICATION_ICONS[n.type] ?? (
+                          <Bell size={14} className="text-gray-400" />
+                        )}
+                      </span>
+                      <div className="min-w-0 flex-1">
                         <p className="text-xs leading-snug text-[#4c5a71]">
-                          <span className="font-semibold text-[#112032]">
-                            {i % 2 === 0 ? "Steve Jobs" : "Admin"}
-                          </span>
-                          {i % 2 === 0
-                            ? " posted a link in your timeline."
-                            : " changed the name of the group Freelancer USA."}
+                          {n.content ?? n.type.replace(/_/g, " ")}
                         </p>
                         <span className="text-[10px] text-[#9aa5b8]">
-                          42 minutes ago
+                          {timeAgo(n.createdAt)}
                         </span>
                       </div>
+                      {!n.isRead && (
+                        <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#377DFF]" />
+                      )}
                     </div>
                   ))}
                 </div>
@@ -134,15 +205,88 @@ function Navbar() {
           </div>
 
           {/* Chat */}
-          <Link
-            to="/chat"
-            className="relative rounded-xl p-2.5 hover:bg-[#f0f4ff]"
-          >
-            <MessageCircle size={22} className="text-gray-500" fill="none" />
-            <span className="absolute -top-0.5 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-[#FF6B6B] text-[10px] font-bold text-white">
-              2
-            </span>
-          </Link>
+          <div ref={chatRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setChatOpen((v) => !v)}
+              className="relative rounded-xl p-2.5 hover:bg-[#f0f4ff]"
+            >
+              <MessageCircle size={22} className="text-gray-500" fill="none" />
+              {chatUnread > 0 && (
+                <span className="absolute -top-0.5 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-[#FF6B6B] text-[10px] font-bold text-white">
+                  {chatUnread > 99 ? "99+" : chatUnread}
+                </span>
+              )}
+            </button>
+
+            {/* Chat Dropdown */}
+            {chatOpen && (
+              <div className="absolute top-full -right-10 z-50 mt-3 w-80 rounded-b-xl border border-[#e7edf8] bg-white shadow-xl">
+                <div className="flex items-center justify-between border-b border-[#e7edf8] px-4 py-3">
+                  <h4 className="font-semibold text-[#112032]">Messages</h4>
+                  <Link
+                    to="/chat"
+                    onClick={() => setChatOpen(false)}
+                    className="text-xs text-[#377DFF] hover:underline"
+                  >
+                    See all
+                  </Link>
+                </div>
+                <div className="max-h-[80vh] divide-y divide-[#f0f3f8] overflow-y-auto">
+                  {chatLoading && (
+                    <div className="px-4 py-6 text-center text-sm text-[#9aa5b8]">
+                      Loading…
+                    </div>
+                  )}
+                  {!chatLoading && conversations.length === 0 && (
+                    <div className="px-4 py-6 text-center text-sm text-[#9aa5b8]">
+                      No messages yet
+                    </div>
+                  )}
+                  {conversations.map(({ partner, lastMessage }) => {
+                    const isUnread =
+                      lastMessage?.receiverId === user?.id &&
+                      lastMessage?.status !== "READ";
+                    return (
+                      <Link
+                        key={partner.id}
+                        to={`/chat/${partner.id}`}
+                        onClick={() => setChatOpen(false)}
+                        className={`flex items-center gap-3 px-4 py-3 hover:bg-[#f5f7fb] ${
+                          isUnread ? "bg-[#f0f6ff]" : ""
+                        }`}
+                      >
+                        <img
+                          src={partner.avatarUrl || "/images/profile.png"}
+                          className="h-10 w-10 shrink-0 rounded-full object-cover"
+                          alt={`${partner.firstName} ${partner.lastName}`}
+                        />
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-semibold text-[#112032]">
+                            {partner.firstName} {partner.lastName}
+                          </p>
+                          <p className="truncate text-xs text-[#4c5a71]">
+                            {lastMessage?.senderId === user?.id ? "You: " : ""}
+                            {lastMessage?.content ?? ""}
+                          </p>
+                        </div>
+                        <div className="flex shrink-0 flex-col items-end gap-1">
+                          <span className="text-[10px] text-[#9aa5b8]">
+                            {lastMessage?.createdAt
+                              ? timeAgo(lastMessage.createdAt)
+                              : ""}
+                          </span>
+                          {isUnread && (
+                            <span className="h-2 w-2 rounded-full bg-[#377DFF]" />
+                          )}
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Profile */}

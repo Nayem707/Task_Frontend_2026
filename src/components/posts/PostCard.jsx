@@ -82,12 +82,22 @@ function PostCard({ post }) {
         <div className="flex items-center gap-3">
           {/* Letter Avatar */}
           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-lg font-semibold text-[#acb2b9]">
-            {post.author?.name?.charAt(0).toUpperCase() || "U"}
+            {post.author?.avatarUrl ? (
+              <img
+                src={post.author.avatarUrl}
+                alt=""
+                className="h-11 w-11 rounded-full object-cover"
+              />
+            ) : (
+              (post.author?.firstName ?? "U").charAt(0).toUpperCase()
+            )}
           </div>
 
           <div>
             <p className="text-sm font-semibold text-[#112032]">
-              {post.author?.name || "Unknown Author"}
+              {post.author?.firstName
+                ? `${post.author.firstName} ${post.author.lastName ?? ""}`.trim()
+                : post.author?.name || "Unknown Author"}
             </p>
             <p className="text-xs text-[#79879d]">
               {formatDateTime(post.createdAt)} .{" "}

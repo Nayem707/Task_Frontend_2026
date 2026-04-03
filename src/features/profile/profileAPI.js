@@ -18,6 +18,18 @@ const normalizeUser = (payload) => {
   };
 };
 
+const normalizePost = (post) => ({
+  ...post,
+  author: post.user
+    ? {
+        id: post.user.id,
+        firstName: post.user.firstName,
+        lastName: post.user.lastName,
+        avatarUrl: post.user.avatarUrl || null,
+      }
+    : (post.author ?? null),
+});
+
 const normalizeList = (payload) => {
   const response = unwrapResponse(payload);
   const root = response?.data ?? response;
@@ -61,7 +73,8 @@ export const fetchUserPosts = createAsyncThunk(
       rejectWithValue,
       signal
     );
-    return normalizeList(payload);
+    const result = normalizeList(payload);
+    return { ...result, items: result.items.map(normalizePost) };
   }
 );
 
