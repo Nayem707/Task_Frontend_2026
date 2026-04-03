@@ -37,7 +37,7 @@ export function CommentInputRow({
       <img
         src={avatarSrc}
         alt=""
-        className="h-9 w-9 shrink-0 rounded-full object-cover"
+        className="h-8 w-8 shrink-0 rounded-full object-cover"
         loading="lazy"
       />
       <div className="flex flex-1 items-center gap-2 rounded-full border border-[#e7edf8] bg-[#f5f7fb] px-4 py-2">

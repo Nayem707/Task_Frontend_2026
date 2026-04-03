@@ -100,6 +100,8 @@ function Comment({ postId, comment }) {
               <Reply
                 key={reply.id}
                 reply={reply}
+                postId={postId}
+                parentCommentId={comment.id}
                 onToggleLike={(replyId) =>
                   dispatch(toggleCommentLike({ postId, commentId: replyId }))
                 }
