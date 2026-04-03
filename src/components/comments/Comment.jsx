@@ -72,7 +72,7 @@ function Comment({ postId, comment }) {
             onClick={handleToggleLike}
             className={`hover:text-[#112032] ${comment.likedByMe ? "text-[#377DFF]" : ""}`}
           >
-            Like
+            {comment.likedByMe ? "Unlike" : "Like"}
           </button>
           <span>●</span>
           <button

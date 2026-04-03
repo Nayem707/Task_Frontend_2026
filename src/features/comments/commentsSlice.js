@@ -23,6 +23,7 @@ const updateNestedLike = (comments, commentId, liked) =>
       return {
         ...comment,
         likedByMe: liked,
+        likesCount: Math.max(0, (comment.likesCount || 0) + delta),
         _count: comment._count
           ? {
               ...comment._count,
@@ -96,21 +97,21 @@ const commentsSlice = createSlice({
         const { postId, commentId } = action.payload;
         if (!state.byPostId[postId]) return;
         state.byPostId[postId] = state.byPostId[postId].filter(
-          (c) => c.id !== commentId,
+          (c) => c.id !== commentId
         );
       })
       .addCase(updateComment.fulfilled, (state, action) => {
         const { postId, commentId, comment } = action.payload;
         if (!state.byPostId[postId]) return;
         state.byPostId[postId] = state.byPostId[postId].map((c) =>
-          c.id === commentId ? { ...c, ...comment } : c,
+          c.id === commentId ? { ...c, ...comment } : c
         );
       })
       .addCase(fetchCommentReplies.fulfilled, (state, action) => {
         const { postId, commentId, replies } = action.payload;
         if (!state.byPostId[postId]) return;
         state.byPostId[postId] = state.byPostId[postId].map((c) =>
-          c.id === commentId ? { ...c, replies } : c,
+          c.id === commentId ? { ...c, replies } : c
         );
       });
   },
