@@ -16,6 +16,7 @@ import {
   MessageSquare,
   UserPlus,
   AtSign,
+  Camera,
 } from "lucide-react";
 import { logout } from "../../../features/auth/authAPI";
 import { ROUTES } from "../../../utils/constants";
@@ -301,6 +302,10 @@ function Navbar() {
             className="h-10 w-10 rounded-full object-cover"
             loading="lazy"
           />
+
+          <div className="relative">
+            <div className="absolute right-1 -bottom-4 cursor-pointer rounded-full border-2 border-white bg-green-800 p-1 transition hover:bg-gray-900" />
+          </div>
           <div className="hidden items-center gap-1 lg:flex">
             <span className="text-sm font-medium text-[#112032]">
               {fullName}

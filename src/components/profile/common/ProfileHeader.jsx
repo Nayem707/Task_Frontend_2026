@@ -33,8 +33,8 @@ export const ProfileHeader = ({ user = {} }) => {
               e.target.src = "/images/profile.png";
             }}
           />
-          <div className="absolute right-0 bottom-0 cursor-pointer rounded-full border-2 border-white bg-gray-800 p-1 transition hover:bg-gray-900">
-            <Camera size={12} className="text-white" />
+          <div className="absolute right-0 bottom-4 cursor-pointer rounded-full border-2 border-white bg-gray-800 p-1 transition hover:bg-gray-900">
+            <Camera size={15} className="text-white" />
           </div>
         </div>
       </div>

@@ -10,11 +10,13 @@ import {
   UserCheck,
 } from "lucide-react";
 import { toggleFollow } from "../../../features/profile/profileAPI";
+import { EditProfileModal } from "./EditProfileModal";
 
 export const ProfileInfo = ({ user, currentUserId }) => {
   const dispatch = useDispatch();
   const [isFollowing, setIsFollowing] = useState(user?.isFollowing || false);
   const [followLoading, setFollowLoading] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => {
     setIsFollowing(Boolean(user?.isFollowing));
@@ -42,9 +44,17 @@ export const ProfileInfo = ({ user, currentUserId }) => {
           <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">
             {user.firstName} {user.lastName}
           </h1>
-          <div className="mt-1 flex items-center gap-2 text-gray-600">
-            <Users size={14} />
-            <span className="text-sm">{user.followers || 0} followers</span>
+
+          <div className="flex gap-2">
+            <div className="mt-1 flex items-center gap-2 text-gray-600">
+              <Users size={14} />
+              <span className="text-sm">{user.followers || 0} followers</span>
+            </div>
+
+            <div className="mt-1 flex items-center gap-2 text-gray-600">
+              <Users size={14} />
+              <span className="text-sm">{user.following || 0} following</span>
+            </div>
           </div>
 
           {/* Mutual Friends (if available) */}
@@ -69,7 +79,10 @@ export const ProfileInfo = ({ user, currentUserId }) => {
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-2">
           {isOwnProfile ? (
-            <button className="flex items-center gap-2 rounded-full bg-gray-200 px-5 py-2 text-sm font-semibold text-gray-800 transition hover:bg-gray-300">
+            <button
+              onClick={() => setEditOpen(true)}
+              className="flex items-center gap-2 rounded-full bg-gray-200 px-5 py-2 text-sm font-semibold text-gray-800 transition hover:bg-gray-300"
+            >
               <MoreHorizontal size={14} /> Edit profile
             </button>
           ) : (
@@ -120,6 +133,8 @@ export const ProfileInfo = ({ user, currentUserId }) => {
         )}
       </div>
       {user.bio && <p className="mt-2 text-sm text-gray-700">{user.bio}</p>}
+
+      <EditProfileModal open={editOpen} onClose={() => setEditOpen(false)} />
     </div>
   );
 };
