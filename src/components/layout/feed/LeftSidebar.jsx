@@ -256,8 +256,19 @@ function LeftSidebar() {
             ) : (
               suggestedPeople.map((person) => (
                 <div key={person.id} className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-lg font-semibold text-[#acb2b9]">
-                    {person.name?.charAt(0).toUpperCase() || "U"}
+                  <div className="h-11 w-11 shrink-0">
+                    {person.image && person.image !== "/images/profile.png" ? (
+                      <img
+                        src={person.image}
+                        alt={person.name}
+                        className="h-11 w-11 rounded-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-lg font-semibold text-[#acb2b9]">
+                        {person.name?.charAt(0).toUpperCase() || "U"}
+                      </div>
+                    )}
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-[#112032]">

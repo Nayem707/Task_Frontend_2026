@@ -222,7 +222,7 @@ function Navbar() {
 
             {/* Chat Dropdown */}
             {chatOpen && (
-              <div className="absolute top-full -right-10 z-50 mt-3 w-80 rounded-b-xl border border-[#e7edf8] bg-white shadow-xl">
+              <div className="absolute top-full -right-20 z-50 mt-3 w-82 rounded-b-xl border border-[#e7edf8] bg-white shadow-xl">
                 <div className="flex items-center justify-between border-b border-[#e7edf8] px-4 py-3">
                   <h4 className="font-semibold text-[#112032]">Messages</h4>
                   <Link

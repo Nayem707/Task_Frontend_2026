@@ -150,11 +150,21 @@ const RightSidebar = () => {
             {filteredFollowing.map((person) => (
               <li key={person.id} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200 text-lg font-semibold text-[#acb2b9]">
-                    {person.name?.charAt(0).toUpperCase() || "U"}
-                  </div>
-                  <div className="relative">
-                    <div className="absolute right-1 -bottom-3 cursor-pointer rounded-full border-2 border-white bg-green-600 p-1 transition hover:bg-gray-900" />
+                  <div className="relative h-12 w-12 shrink-0">
+                    {person.avatarUrl &&
+                    person.avatarUrl !== "/images/profile.png" ? (
+                      <img
+                        src={person.avatarUrl}
+                        alt={person.name}
+                        className="h-12 w-12 rounded-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200 text-lg font-semibold text-[#acb2b9]">
+                        {person.name?.charAt(0).toUpperCase() || "U"}
+                      </div>
+                    )}
+                    <span className="absolute right-0 bottom-0 h-3 w-3 rounded-full border-2 border-white bg-green-500" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-[#112032]">
