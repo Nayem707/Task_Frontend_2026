@@ -7,7 +7,7 @@ function Modal({ title, open, onClose, children }) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-xl bg-white p-5 shadow-xl"
+        className="w-full max-w-2xl rounded-xl bg-white p-5 shadow-xl"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-3 flex items-center justify-between">

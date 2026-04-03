@@ -19,15 +19,24 @@ export const fetchLikesList = createAsyncThunk(
     return apiExecutor(
       async () => {
         const response = await GET(endpoint, undefined, signal);
+        const users = (response.data.data || []).map((like) => ({
+          id: like.user?.id ?? like.id,
+          name:
+            [like.user?.firstName, like.user?.lastName]
+              .filter(Boolean)
+              .join(" ") || "Anonymous",
+          avatarUrl: like.user?.avatarUrl || null,
+          email: like.user?.email || null,
+        }));
         return {
           key: `${entityType}:${entityId}`,
-          users: response.data.data || [],
+          users,
         };
       },
       rejectWithValue,
-      signal,
+      signal
     );
-  },
+  }
 );
 
 // ✅ Fetch like count statistics for a post
@@ -39,13 +48,13 @@ export const fetchPostLikeStats = createAsyncThunk(
         const response = await GET(
           ENDPOINT.LIKES.POST_STATS(postId),
           undefined,
-          signal,
+          signal
         );
         return { postId, stats: response.data.data };
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );
 
 // ✅ Fetch like count statistics for a comment
@@ -57,11 +66,11 @@ export const fetchCommentLikeStats = createAsyncThunk(
         const response = await GET(
           ENDPOINT.LIKES.COMMENT_STATS(commentId),
           undefined,
-          signal,
+          signal
         );
         return { commentId, stats: response.data.data };
       },
       rejectWithValue,
-      signal,
-    ),
+      signal
+    )
 );

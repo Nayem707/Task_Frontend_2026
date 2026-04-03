@@ -30,6 +30,7 @@ function PostCard({ post }) {
   const likesUsers = useSelector(
     (state) => state.likes.likesByEntity[key] ?? EMPTY_ARRAY
   );
+  const likesLoading = useSelector((state) => state.likes.loading);
   const imageUrls =
     post.images?.length > 0
       ? post.images
@@ -321,7 +322,7 @@ function PostCard({ post }) {
         open={likesOpen}
         onClose={() => setLikesOpen(false)}
       >
-        <LikesList users={likesUsers} />
+        <LikesList users={likesUsers} loading={likesLoading} />
       </Modal>
     </article>
   );
