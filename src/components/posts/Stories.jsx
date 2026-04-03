@@ -1,84 +1,205 @@
-import React from "react";
-import { ChevronRight, Plus } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 
 const friendStories = [
   {
+    id: 1,
     name: "Ryan Roslansky",
-    avatar: "/images/people2.png",
-    bg: "/images/mobile_story_img.png",
+    avatar: "/images/people1.png",
+    bg: "/images/photos5.png",
   },
   {
-    name: "Ryan Roslansky",
+    id: 2,
+    name: "Emma Watson",
     avatar: "/images/people2.png",
-    bg: "/images/mobile_story_img1.png",
+    bg: "/images/photos6.png",
   },
   {
-    name: "Ryan Roslansky",
-    avatar: "/images/people2.png",
-    bg: "/images/mobile_story_img2.png",
+    id: 3,
+    name: "Chris Evans",
+    avatar: "/images/people3.png",
+    bg: "/images/photos7.png",
   },
   {
-    name: "Ryan Roslansky",
-    avatar: "/images/people2.png",
-    bg: "/images/img1.png",
+    id: 4,
+    name: "Scarlett Johansson",
+    avatar: "/images/img1.png",
+    bg: "/images/photos8.png",
+  },
+  {
+    id: 5,
+    name: "Robert Downey Jr.",
+    avatar: "/images/img2.png",
+    bg: "/images/photos9.png",
+  },
+  {
+    id: 6,
+    name: "Natalie Portman",
+    avatar: "/images/img3.png",
+    bg: "/images/photos2.png",
+  },
+  {
+    id: 7,
+    name: "Tom Holland",
+    avatar: "/images/img4.png",
+    bg: "/images/photos7.png",
+  },
+  {
+    id: 8,
+    name: "Zendaya",
+    avatar: "/images/img5.png",
+    bg: "/images/photos8.png",
+  },
+  {
+    id: 9,
+    name: "Leonardo DiCaprio",
+    avatar: "/images/img6.png",
+    bg: "/images/photos9.png",
   },
 ];
-
 const Stories = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(4);
+  const containerRef = useRef(null);
+
+  // Update visible count based on screen width
+  useEffect(() => {
+    const updateVisibleCount = () => {
+      const width = window.innerWidth;
+      if (width < 640) setVisibleCount(2);
+      else if (width < 768) setVisibleCount(3);
+      else if (width < 1024) setVisibleCount(4);
+      else setVisibleCount(5);
+    };
+    updateVisibleCount();
+    window.addEventListener("resize", updateVisibleCount);
+    return () => window.removeEventListener("resize", updateVisibleCount);
+  }, []);
+
+  const totalStories = friendStories.length + 1; // +1 for "Your Story"
+  const maxIndex = Math.max(0, totalStories - visibleCount);
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => Math.min(prev + 1, maxIndex));
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => Math.max(prev - 1, 0));
+  };
+
+  // Combine "Your Story" with friend stories
+  const allStories = [
+    {
+      id: "your-story",
+      name: "Your Story",
+      avatar: "/images/profile.png",
+      bg: null,
+      isYourStory: true,
+    },
+    ...friendStories.map((story, idx) => ({
+      ...story,
+      id: idx,
+      isYourStory: false,
+    })),
+  ];
+
+  const visibleStories = allStories.slice(
+    currentIndex,
+    currentIndex + visibleCount
+  );
+
   return (
-    <section className="app-card mb-4 px-4 py-4">
-      <div className="flex gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {/* Your Story */}
-        <div className="relative h-[190px] w-[130px] shrink-0 cursor-pointer overflow-hidden rounded-2xl bg-[#eef2f8]">
-          <img
-            src="/images/profile.png"
-            alt="Your Story"
-            className="absolute bottom-8 left-1/2 h-20 w-20 -translate-x-1/2 rounded-full object-cover"
-          />
-          <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-black/60 to-transparent px-2 pt-8 pb-2">
-            <p className="text-center text-[11px] font-semibold text-white">
-              Your Story
-            </p>
-          </div>
-          <div className="absolute top-3 left-1/2 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full border-2 border-white bg-[#377DFF] shadow">
-            <Plus size={16} className="text-white" strokeWidth={3} />
-          </div>
-        </div>
-
-        {/* Friend Stories */}
-        {friendStories.map((story, i) => (
-          <div
-            key={i}
-            className="relative h-[190px] w-[130px] shrink-0 cursor-pointer overflow-hidden rounded-2xl"
-          >
-            <img
-              src={story.bg}
-              alt={story.name}
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-            <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent px-2 pt-10 pb-2">
-              <p className="text-center text-[11px] font-semibold text-white">
-                {story.name}
-              </p>
+    <section className="relative mb-6 rounded-2xl bg-white px-4 py-4 shadow-sm">
+      {/* Slider Container */}
+      <div className="relative overflow-hidden">
+        <div
+          className="flex gap-3 transition-transform duration-500 ease-out"
+          style={{
+            transform: `translateX(-${currentIndex * (130 + 12)}px)`, // 130px width + 12px gap (gap-3 = 0.75rem = 12px)
+          }}
+        >
+          {allStories.map((story) => (
+            <div
+              key={story.id}
+              className="relative h-[200px] w-[130px] shrink-0 cursor-pointer overflow-hidden rounded-xl"
+            >
+              {story.isYourStory ? (
+                // Your Story Card
+                <>
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300" />
+                  <img
+                    src={story.avatar}
+                    alt="Your Story"
+                    className="absolute bottom-10 left-1/2 h-16 w-16 -translate-x-1/2 rounded-full border-2 border-white object-cover"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-2 pt-8 pb-2">
+                    <p className="text-center text-xs font-semibold text-white">
+                      {story.name}
+                    </p>
+                  </div>
+                  <div className="absolute top-3 left-1/2 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full border-2 border-white bg-blue-600 shadow-md">
+                    <Plus size={16} className="text-white" strokeWidth={3} />
+                  </div>
+                </>
+              ) : (
+                // Friend Story Card
+                <>
+                  <img
+                    src={story.bg}
+                    alt={story.name}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2 pt-10 pb-2">
+                    <p className="text-center text-xs font-semibold text-white">
+                      {story.name}
+                    </p>
+                  </div>
+                  <img
+                    src={story.avatar}
+                    alt={story.name}
+                    className="absolute top-3 left-3 h-10 w-10 rounded-full border-2 border-blue-500 object-cover"
+                  />
+                </>
+              )}
             </div>
-            <img
-              src={story.avatar}
-              alt={story.name}
-              className="absolute top-3 left-3 h-9 w-9 rounded-full border-2 border-[#377DFF] object-cover"
-            />
-          </div>
-        ))}
-
-        {/* See More */}
-        <div className="flex shrink-0 items-center pl-1">
-          <button
-            type="button"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#377DFF] shadow-md"
-          >
-            <ChevronRight size={20} className="text-white" />
-          </button>
+          ))}
         </div>
+
+        {/* Navigation Arrows */}
+        {currentIndex > 0 && (
+          <button
+            onClick={prevSlide}
+            className="absolute top-1/2 left-0 flex h-8 w-8 -translate-x-3 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-md transition hover:bg-gray-100"
+            aria-label="Previous stories"
+          >
+            <ChevronLeft size={18} className="text-gray-700" />
+          </button>
+        )}
+        {currentIndex < maxIndex && (
+          <button
+            onClick={nextSlide}
+            className="absolute top-1/2 right-0 flex h-8 w-8 translate-x-3 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-md transition hover:bg-gray-100"
+            aria-label="Next stories"
+          >
+            <ChevronRight size={18} className="text-gray-700" />
+          </button>
+        )}
       </div>
+
+      {/* Optional: Pagination Dots */}
+      {maxIndex > 0 && (
+        <div className="mt-4 flex justify-center gap-1">
+          {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentIndex(idx)}
+              className={`h-1.5 rounded-full transition-all ${
+                idx === currentIndex ? "w-4 bg-blue-600" : "w-1.5 bg-gray-300"
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 };
