@@ -15,6 +15,7 @@ import {
   Globe,
   Lock,
   User2,
+  X,
 } from "lucide-react";
 import {
   deletePost,
@@ -36,6 +37,7 @@ function PostCard({ post }) {
   const [dropOpen, setDropOpen] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [visibilityLoading, setVisibilityLoading] = useState(false);
+  const [lightboxSrc, setLightboxSrc] = useState(null);
   const dropId = useRef(`drop-${post.id}`);
 
   // Close this dropdown when another post's dropdown opens
@@ -46,6 +48,16 @@ function PostCard({ post }) {
     window.addEventListener("postdrop:open", handler);
     return () => window.removeEventListener("postdrop:open", handler);
   }, []);
+
+  // Close lightbox on Escape
+  useEffect(() => {
+    if (!lightboxSrc) return;
+    const handler = (e) => {
+      if (e.key === "Escape") setLightboxSrc(null);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [lightboxSrc]);
 
   const toggleDrop = () => {
     setDropOpen((v) => {
@@ -276,7 +288,8 @@ function PostCard({ post }) {
                 <img
                   src={src}
                   alt={`Post image ${index + 1}`}
-                  className={`h-full w-full object-cover ${
+                  onClick={() => setLightboxSrc(src)}
+                  className={`h-full w-full cursor-pointer object-cover ${
                     isSingle ? "max-h-152 object-contain" : ""
                   }`}
                   loading="lazy"
@@ -395,6 +408,28 @@ function PostCard({ post }) {
       >
         <LikesList users={likesUsers} loading={likesLoading} />
       </Modal>
+
+      {/* Image lightbox */}
+      {lightboxSrc && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+          onClick={() => setLightboxSrc(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setLightboxSrc(null)}
+            className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
+          >
+            <X size={20} />
+          </button>
+          <img
+            src={lightboxSrc}
+            alt="Full size"
+            onClick={(e) => e.stopPropagation()}
+            className="max-h-[90vh] max-w-full rounded-xl object-contain shadow-2xl"
+          />
+        </div>
+      )}
     </article>
   );
 }
