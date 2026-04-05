@@ -1,71 +1,24 @@
 import { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
-import { GET, POST } from "../../../services/httpMethods";
-import { ENDPOINT } from "../../../services/httpEndpoint";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchFollowing, toggleFollow } from "../../../features/users/usersAPI";
 import { UserMinus } from "lucide-react";
 
 const RightSidebar = () => {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+  const followingUsers = useSelector((state) => state.users.following);
+  const loadingFollowing = useSelector((state) => state.users.followingLoading);
+  const unfollowLoadingId = useSelector((state) => state.users.followLoadingId);
   const [query, setQuery] = useState("");
-  const [followingUsers, setFollowingUsers] = useState([]);
-  const [loadingFollowing, setLoadingFollowing] = useState(true);
-  const [unfollowLoadingId, setUnfollowLoadingId] = useState(null);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const loadFollowing = async () => {
-      if (!user?.id) {
-        setLoadingFollowing(false);
-        return;
-      }
-
-      try {
-        setLoadingFollowing(true);
-        const response = await GET(ENDPOINT.USERS.FOLLOWING(user.id), {
-          page: 1,
-          limit: 30,
-        });
-        const users = response?.data?.data?.data ?? [];
-
-        if (!isMounted) return;
-
-        setFollowingUsers(
-          users.map((item) => ({
-            id: item.id,
-            name: [item.firstName, item.lastName].filter(Boolean).join(" "),
-            title: item.bio || item.email,
-            avatarUrl: item.avatarUrl || "/images/profile.png",
-          }))
-        );
-      } catch (error) {
-        if (!isMounted) return;
-        setFollowingUsers([]);
-        console.error("Failed to load following users", error);
-      } finally {
-        if (isMounted) {
-          setLoadingFollowing(false);
-        }
-      }
-    };
-
-    loadFollowing();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [user?.id]);
-
-  const handleUnfollow = async (userId) => {
-    try {
-      setUnfollowLoadingId(userId);
-      await POST(ENDPOINT.USERS.TOGGLE_FOLLOW(userId));
-      setFollowingUsers((prev) => prev.filter((p) => p.id !== userId));
-    } catch (error) {
-      console.error("Failed to unfollow", error);
-    } finally {
-      setUnfollowLoadingId(null);
+    if (user?.id) {
+      dispatch(fetchFollowing(user.id));
     }
+  }, [dispatch, user?.id]);
+
+  const handleUnfollow = (userId) => {
+    dispatch(toggleFollow(userId));
   };
 
   const filteredFollowing = useMemo(() => {
@@ -73,9 +26,10 @@ const RightSidebar = () => {
     if (!normalized) return followingUsers;
 
     return followingUsers.filter((item) => {
+      const subtitle = item.bio || item.email || "";
       return (
         item.name.toLowerCase().includes(normalized) ||
-        item.title.toLowerCase().includes(normalized)
+        subtitle.toLowerCase().includes(normalized)
       );
     });
   }, [followingUsers, query]);
@@ -168,8 +122,7 @@ const RightSidebar = () => {
               >
                 <div className="flex items-center gap-2">
                   <div className="relative h-12 w-12 shrink-0">
-                    {person.avatarUrl &&
-                    person.avatarUrl !== "/images/profile.png" ? (
+                    {person.avatarUrl ? (
                       <img
                         src={person.avatarUrl}
                         alt={person.name}
@@ -189,7 +142,7 @@ const RightSidebar = () => {
                       {person.name}
                     </p>
                     <p className="truncate text-xs text-[#738098]">
-                      {person.title}
+                      {person.bio || person.email}
                     </p>
                   </div>
                 </div>

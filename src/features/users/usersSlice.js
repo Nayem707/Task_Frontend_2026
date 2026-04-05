@@ -34,7 +34,7 @@ const usersSlice = createSlice({
       })
       .addCase(fetchFollowers.fulfilled, (state, action) => {
         state.followersLoading = false;
-        state.followers = action.payload.data || [];
+        state.followers = action.payload || [];
       })
       .addCase(fetchFollowers.rejected, (state, action) => {
         state.followersLoading = false;
@@ -49,7 +49,7 @@ const usersSlice = createSlice({
       })
       .addCase(fetchFollowing.fulfilled, (state, action) => {
         state.followingLoading = false;
-        state.following = action.payload.data || [];
+        state.following = action.payload || [];
       })
       .addCase(fetchFollowing.rejected, (state, action) => {
         state.followingLoading = false;
@@ -84,6 +84,7 @@ const usersSlice = createSlice({
           state.suggestedPeople = state.suggestedPeople.filter(
             (user) => user.id !== userId
           );
+        } else if (followAction === "unfollowed") {
           state.following = state.following.filter(
             (user) => user.id !== userId
           );

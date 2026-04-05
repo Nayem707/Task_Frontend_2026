@@ -30,10 +30,7 @@ export const fetchFollowers = createAsyncThunk(
           undefined,
           signal
         );
-        return {
-          data: (response.data.data || []).map(normalizeUser),
-          pagination: response.data.pagination,
-        };
+        return (response.data.data?.data || []).map(normalizeUser);
       },
       rejectWithValue,
       signal
@@ -53,10 +50,7 @@ export const fetchFollowing = createAsyncThunk(
           undefined,
           signal
         );
-        return {
-          data: (response.data.data || []).map(normalizeUser),
-          pagination: response.data.pagination,
-        };
+        return (response.data.data?.data || []).map(normalizeUser);
       },
       rejectWithValue,
       signal
