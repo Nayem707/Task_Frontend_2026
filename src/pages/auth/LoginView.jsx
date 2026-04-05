@@ -28,8 +28,10 @@ function LoginView() {
       await dispatch(login(data)).unwrap();
       toast.success("Logged in successfully");
       navigate(from, { replace: true });
-    } catch (error) {
-      toast.error(error || "Login failed.");
+    } catch (err) {
+      const message =
+        typeof err === "string" ? err : err?.message || "Login failed.";
+      toast.error(message);
     }
   };
 

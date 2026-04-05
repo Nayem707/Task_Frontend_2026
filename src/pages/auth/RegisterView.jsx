@@ -36,8 +36,10 @@ function RegisterView() {
       ).unwrap();
       toast.success("Account created");
       navigate(ROUTES.FEED, { replace: true });
-    } catch (error) {
-      toast.error(error || "Registration failed.");
+    } catch (err) {
+      const message =
+        typeof err === "string" ? err : err?.message || "Registration failed.";
+      toast.error(message);
     }
   };
 
