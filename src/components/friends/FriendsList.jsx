@@ -10,7 +10,7 @@ function FriendsList({ friends, onRemoveFriend }) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5">
       {friends.map((friend) => (
         <FriendCard key={friend.id} friend={friend} onRemove={onRemoveFriend} />
       ))}

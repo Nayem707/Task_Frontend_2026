@@ -1,40 +1,42 @@
-import { UserMinus, MoreHorizontal } from "lucide-react";
+import { UserMinus, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 
 function FriendCard({ friend, onRemove }) {
+  const initial = friend.name?.charAt(0).toUpperCase() || "U";
+
   return (
-    <div className="overflow-hidden rounded-lg bg-white shadow-sm transition hover:shadow-md sm:rounded-xl">
-      <Link to={`/profile/${friend.id}`}>
-        <img
-          src={friend.avatar}
-          alt={friend.name}
-          className="h-32 w-full object-cover sm:h-40"
-        />
-      </Link>
-      <div className="p-2.5 sm:p-3">
+    <div className="overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-md">
+      <div className="relative h-20 bg-gradient-to-r from-green-200 to-teal-100">
+        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2">
+          {friend.avatarUrl ? (
+            <img
+              src={friend.avatarUrl}
+              alt={friend.name}
+              className="h-14 w-14 rounded-full border-4 border-white object-cover shadow"
+            />
+          ) : (
+            <div className="flex h-14 w-14 items-center justify-center rounded-full border-4 border-white bg-gray-200 text-xl font-bold text-gray-500 shadow">
+              {initial}
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="px-3 pt-8 pb-4 text-center">
         <Link to={`/profile/${friend.id}`}>
-          <h3 className="text-sm font-semibold text-gray-900 hover:underline">
+          <h3 className="truncate text-sm font-semibold text-gray-900 hover:underline">
             {friend.name}
           </h3>
         </Link>
-        <p className="text-[10px] text-gray-500 sm:text-xs">
-          @{friend.username}
+        <p className="mt-0.5 truncate text-xs text-gray-400">
+          {friend.bio || friend.email || ""}
         </p>
-        <p className="mt-0.5 text-[10px] text-gray-500 sm:mt-1 sm:text-xs">
-          {friend.mutualFriends} mutual friends
-        </p>
-        <div className="mt-2 flex gap-1.5 sm:mt-3 sm:gap-2">
-          <button
-            onClick={() => onRemove(friend.id)}
-            className="flex flex-1 items-center justify-center gap-1 rounded-full bg-gray-100 px-2.5 py-1.5 text-[10px] font-medium text-gray-700 transition hover:bg-gray-200 sm:px-3 sm:text-xs"
-          >
-            <UserMinus size={12} className="sm:size-[14px]" />
-            Remove
-          </button>
-          <button className="flex items-center justify-center rounded-full bg-gray-100 p-1.5 text-gray-700 transition hover:bg-gray-200">
-            <MoreHorizontal size={14} className="sm:size-4" />
-          </button>
-        </div>
+        <button
+          onClick={() => onRemove(friend.id)}
+          className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg border border-gray-200 py-1.5 text-xs font-medium text-gray-600 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600"
+        >
+          <UserPlus size={13} />
+          Follow Back
+        </button>
       </div>
     </div>
   );

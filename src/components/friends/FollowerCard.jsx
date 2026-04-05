@@ -1,4 +1,4 @@
-import { UserPlus } from "lucide-react";
+import { UserPlus, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 
 function FollowerCard({ user, onFollow }) {
@@ -6,48 +6,50 @@ function FollowerCard({ user, onFollow }) {
   const isFollowingBack = user.isFollowing;
 
   return (
-    <div className="flex items-center justify-between rounded-lg bg-white p-2.5 shadow-sm sm:p-3">
-      <div className="flex items-center gap-2 sm:gap-3">
-        <Link to={`/profile/${user.id}`}>
+    <div className="overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-md">
+      <div className="relative h-20 bg-gradient-to-r from-purple-400 to-pink-400">
+        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2">
           {user.avatarUrl ? (
             <img
               src={user.avatarUrl}
               alt={user.name}
-              className="h-9 w-9 rounded-full object-cover sm:h-10 sm:w-10"
+              className="h-14 w-14 rounded-full border-4 border-white object-cover shadow"
             />
           ) : (
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-200 text-xs font-semibold text-gray-600 sm:h-10 sm:w-10 sm:text-sm">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full border-4 border-white bg-gray-200 text-xl font-bold text-gray-500 shadow">
               {initial}
             </div>
           )}
-        </Link>
-        <div className="min-w-0">
-          <Link to={`/profile/${user.id}`}>
-            <h3 className="truncate text-xs font-semibold text-gray-900 hover:underline sm:text-sm">
-              {user.name}
-            </h3>
-          </Link>
-          <p className="truncate text-[10px] text-gray-500 sm:text-xs">
-            {user.email}
-          </p>
         </div>
       </div>
-      <button
-        onClick={() => onFollow(user.id)}
-        className={`flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1.5 text-[10px] font-medium transition sm:px-3 sm:text-xs ${
-          isFollowingBack
-            ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            : "bg-blue-600 text-white hover:bg-blue-700"
-        }`}
-      >
-        <UserPlus size={12} className="sm:size-[14px]" />
-        <span className="hidden sm:inline">
-          {isFollowingBack ? "Following" : "Follow Back"}
-        </span>
-        <span className="sm:hidden">
-          {isFollowingBack ? "Following" : "Follow"}
-        </span>
-      </button>
+      <div className="px-3 pt-8 pb-4 text-center">
+        <Link to={`/profile/${user.id}`}>
+          <h3 className="truncate text-sm font-semibold text-gray-900 hover:underline">
+            {user.name}
+          </h3>
+        </Link>
+        <p className="mt-0.5 truncate text-xs text-gray-400">
+          {user.bio || user.email || ""}
+        </p>
+        <button
+          onClick={() => onFollow(user.id)}
+          className={`mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-medium transition ${
+            isFollowingBack
+              ? "border border-gray-200 text-gray-500 hover:bg-gray-50"
+              : "bg-blue-600 text-white hover:bg-blue-700"
+          }`}
+        >
+          {isFollowingBack ? (
+            <>
+              <Check size={13} /> Following
+            </>
+          ) : (
+            <>
+              <UserPlus size={13} /> Follow Back
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
 }

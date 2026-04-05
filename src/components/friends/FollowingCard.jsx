@@ -1,43 +1,43 @@
-import { UserMinus, UserPlus } from "lucide-react";
+import { UserMinus } from "lucide-react";
 import { Link } from "react-router-dom";
 
 function FollowingCard({ user, onUnfollow }) {
   const initial = user.name.charAt(0).toUpperCase();
 
   return (
-    <div className="flex items-center justify-between rounded-lg bg-white p-2.5 shadow-sm sm:p-3">
-      <div className="flex items-center gap-2 sm:gap-3">
-        <Link to={`/profile/${user.id}`}>
+    <div className="overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-md">
+      <div className="relative h-20 bg-gradient-to-r from-blue-200 to-indigo-300">
+        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2">
           {user.avatarUrl ? (
             <img
               src={user.avatarUrl}
               alt={user.name}
-              className="h-9 w-9 rounded-full object-cover sm:h-10 sm:w-10"
+              className="h-14 w-14 rounded-full border-4 border-white object-cover shadow"
             />
           ) : (
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-200 text-xs font-semibold text-gray-600 sm:h-10 sm:w-10 sm:text-sm">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full border-4 border-white bg-gray-200 text-xl font-bold text-gray-500 shadow">
               {initial}
             </div>
           )}
-        </Link>
-        <div className="min-w-0">
-          <Link to={`/profile/${user.id}`}>
-            <h3 className="truncate text-xs font-semibold text-gray-900 hover:underline sm:text-sm">
-              {user.name}
-            </h3>
-          </Link>
-          <p className="truncate text-[10px] text-gray-500 sm:text-xs">
-            {user.email}
-          </p>
         </div>
       </div>
-      <button
-        onClick={() => onUnfollow(user.id)}
-        className="flex shrink-0 items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1.5 text-[10px] font-medium text-gray-700 transition hover:bg-gray-200 sm:px-3 sm:text-xs"
-      >
-        <UserMinus size={12} className="sm:size-[14px]" />
-        Unfollow
-      </button>
+      <div className="px-3 pt-8 pb-4 text-center">
+        <Link to={`/profile/${user.id}`}>
+          <h3 className="truncate text-sm font-semibold text-gray-900 hover:underline">
+            {user.name}
+          </h3>
+        </Link>
+        <p className="mt-0.5 truncate text-xs text-gray-400">
+          {user.bio || user.email || ""}
+        </p>
+        <button
+          onClick={() => onUnfollow(user.id)}
+          className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg border border-gray-200 py-1.5 text-xs font-medium text-gray-600 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600"
+        >
+          <UserMinus size={13} />
+          Unfollow
+        </button>
+      </div>
     </div>
   );
 }

@@ -152,7 +152,7 @@ const FriendsView = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 py-3 sm:py-6">
-      <div className="mx-auto max-w-7xl px-3 sm:px-4">
+      <div className="mx-auto max-w-7xl px-3 sm:px-0">
         <FriendsHeader
           friendsCount={friends.length}
           requestsCount={friendRequests.length}
