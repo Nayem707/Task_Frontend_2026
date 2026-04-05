@@ -5,6 +5,7 @@ import {
   fetchSuggestedPeople,
 } from "../../../features/users/usersAPI";
 import { UserPlus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const exploreItems = [
   {
@@ -208,9 +209,12 @@ function LeftSidebar() {
             <h3 className="text-base font-semibold text-[#112032]">
               Suggested People
             </h3>
-            <a href="#" className="text-xs font-semibold text-[#377DFF]">
+            <Link
+              to="/profile/friends"
+              className="text-xs font-semibold text-[#377DFF] hover:underline"
+            >
               See All
-            </a>
+            </Link>
           </div>
           <div className="space-y-4">
             {loadingPeople ? (
