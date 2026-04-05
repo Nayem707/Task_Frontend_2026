@@ -49,7 +49,10 @@ function PostCard({ post }) {
 
   const toggleDrop = () => {
     setDropOpen((v) => {
-      if (!v) window.dispatchEvent(new CustomEvent("postdrop:open", { detail: dropId.current }));
+      if (!v)
+        window.dispatchEvent(
+          new CustomEvent("postdrop:open", { detail: dropId.current })
+        );
       return !v;
     });
   };
