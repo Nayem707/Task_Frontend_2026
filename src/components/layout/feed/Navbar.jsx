@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   Search,
   Home,
@@ -16,7 +16,6 @@ import {
   MessageSquare,
   UserPlus,
   AtSign,
-  Camera,
 } from "lucide-react";
 import { logout } from "../../../features/auth/authAPI";
 import { ROUTES } from "../../../utils/constants";
@@ -50,6 +49,8 @@ function timeAgo(dateStr) {
 function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const isActive = (path) => pathname === path;
   const user = useSelector((state) => state.auth.user);
   const fullName = user ? `${user.firstName} ${user.lastName}` : "";
   const avatarSrc = user?.avatarUrl || "/images/profile.png";
@@ -122,18 +123,34 @@ function Navbar() {
           {/* Home - active */}
           <Link
             to="/feed"
-            className="relative hidden rounded-xl p-2.5 hover:bg-[#f0f4ff] sm:block"
+            className={`relative hidden rounded-xl p-2.5 hover:bg-[#f0f4ff] sm:block ${isActive("/feed") ? "bg-[#f0f4ff]" : ""}`}
           >
-            <Home size={21} className="text-[#377DFF]" />
-            <span className="absolute bottom-1 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-[#377DFF]" />
+            <Home
+              size={21}
+              className={isActive("/feed") ? "text-[#377DFF]" : "text-gray-500"}
+            />
+            {isActive("/feed") && (
+              <span className="absolute bottom-1 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-[#377DFF]" />
+            )}
           </Link>
 
           {/* Friends */}
           <Link
             to="/profile/friends"
-            className="hidden rounded-xl p-2.5 hover:bg-[#f0f4ff] sm:block"
+            className={`relative hidden rounded-xl p-2.5 hover:bg-[#f0f4ff] sm:block ${isActive("/profile/friends") ? "bg-[#f0f4ff]" : ""}`}
           >
-            <Users size={22} className="text-gray-500" fill="none" />
+            <Users
+              size={22}
+              className={
+                isActive("/profile/friends")
+                  ? "text-[#377DFF]"
+                  : "text-gray-500"
+              }
+              fill="none"
+            />
+            {isActive("/profile/friends") && (
+              <span className="absolute bottom-1 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-[#377DFF]" />
+            )}
           </Link>
 
           {/* Notifications */}
