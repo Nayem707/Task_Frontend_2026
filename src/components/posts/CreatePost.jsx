@@ -13,6 +13,7 @@ import {
   User2,
   Globe,
   Lock,
+  ChevronDown,
 } from "lucide-react";
 import { createPost } from "../../features/posts/postsAPI";
 
@@ -205,7 +206,7 @@ function CreatePost() {
             </button>
           </div>
 
-          <div className="border border-gray-200">
+          <div className="">
             {/* Hidden file input — multiple */}
             <input
               type="file"
@@ -224,7 +225,7 @@ function CreatePost() {
                   visibility === "PUBLIC" ? "PRIVATE" : "PUBLIC"
                 )
               }
-              className={`flex items-center gap-1 px-2 py-1.5 text-xs font-medium transition sm:gap-1.5 sm:px-3 sm:py-2 ${
+              className={`flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium transition sm:gap-1.5 sm:px-3 sm:py-2 ${
                 visibility === "PRIVATE"
                   ? "bg-yellow-50 text-yellow-700 hover:bg-yellow-100"
                   : "text-[#4c5a71] hover:bg-[#f3f7ff]"
@@ -238,6 +239,7 @@ function CreatePost() {
               <span className="hidden sm:inline">
                 {visibility === "PRIVATE" ? "Only Me" : "Public"}
               </span>
+              <ChevronDown size={13} className="shrink-0 opacity-60" />
             </button>
           </div>
           <button
