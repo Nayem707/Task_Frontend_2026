@@ -1,11 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchFollowers, fetchFollowing, toggleFollow } from "./usersAPI";
+import {
+  fetchFollowers,
+  fetchFollowing,
+  fetchSuggestedPeople,
+  toggleFollow,
+} from "./usersAPI";
 
 const initialState = {
   followers: [],
   following: [],
+  suggestedPeople: [],
   followersLoading: false,
   followingLoading: false,
+  suggestedLoading: false,
+  followLoadingId: null,
   error: null,
 };
 
@@ -48,22 +56,41 @@ const usersSlice = createSlice({
         state.error = action.payload || "Failed to fetch following";
       });
 
+    // Fetch Suggested People
+    builder
+      .addCase(fetchSuggestedPeople.pending, (state) => {
+        state.suggestedLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchSuggestedPeople.fulfilled, (state, action) => {
+        state.suggestedLoading = false;
+        state.suggestedPeople = action.payload;
+      })
+      .addCase(fetchSuggestedPeople.rejected, (state, action) => {
+        state.suggestedLoading = false;
+        state.error = action.payload || "Failed to fetch suggested people";
+      });
+
     // Toggle Follow
     builder
+      .addCase(toggleFollow.pending, (state, action) => {
+        state.followLoadingId = action.meta.arg;
+      })
       .addCase(toggleFollow.fulfilled, (state, action) => {
-        const { userId, isFollowing } = action.payload;
+        const { userId, action: followAction } = action.payload;
+        state.followLoadingId = null;
 
-        if (isFollowing) {
-          // Remove from following list if unfollowed
+        if (followAction === "followed") {
+          state.suggestedPeople = state.suggestedPeople.filter(
+            (user) => user.id !== userId
+          );
           state.following = state.following.filter(
             (user) => user.id !== userId
           );
-        } else {
-          // Add to following list if followed (would need user data)
-          // This is handled by refetching in the component
         }
       })
       .addCase(toggleFollow.rejected, (state, action) => {
+        state.followLoadingId = null;
         state.error = action.payload || "Failed to toggle follow";
       });
   },

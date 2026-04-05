@@ -64,6 +64,29 @@ export const fetchFollowing = createAsyncThunk(
 );
 
 /**
+ * Fetch suggested people (users not yet followed)
+ */
+export const fetchSuggestedPeople = createAsyncThunk(
+  "users/fetchSuggestedPeople",
+  async (_, { rejectWithValue, signal }) =>
+    apiExecutor(
+      async () => {
+        const response = await GET(
+          ENDPOINT.USERS.SEARCH,
+          { page: 1, limit: 6 },
+          signal
+        );
+        const users = response.data.data?.data ?? [];
+        return users
+          .filter((user) => user.isFollowing !== true)
+          .map(normalizeUser);
+      },
+      rejectWithValue,
+      signal
+    )
+);
+
+/**
  * Toggle follow/unfollow a user
  */
 export const toggleFollow = createAsyncThunk(
@@ -78,6 +101,7 @@ export const toggleFollow = createAsyncThunk(
         );
         return {
           userId,
+          action: response.data.data?.action,
           isFollowing: response.data.data?.isFollowing ?? false,
           message: response.data.message,
         };

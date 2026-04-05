@@ -1,6 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
-import { GET, POST } from "../../../services/httpMethods";
-import { ENDPOINT } from "../../../services/httpEndpoint";
+import { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchSuggestedPeople,
+  toggleFollow,
+} from "../../../features/users/usersAPI";
 import { UserPlus } from "lucide-react";
 
 const exploreItems = [
@@ -152,40 +155,14 @@ const exploreItems = [
 ];
 
 function LeftSidebar() {
-  const [suggestedPeople, setSuggestedPeople] = useState([]);
-  const [loadingPeople, setLoadingPeople] = useState(true);
-  const [followLoadingId, setFollowLoadingId] = useState(null);
-
-  const loadSuggestedPeople = async () => {
-    try {
-      setLoadingPeople(true);
-      const response = await GET(ENDPOINT.USERS.SEARCH, {
-        page: 1,
-        limit: 6,
-      });
-      const users = response?.data?.data?.data ?? [];
-      setSuggestedPeople(
-        users
-          .filter((user) => user.isFollowing !== true)
-          .map((user) => ({
-            id: user.id,
-            name: [user.firstName, user.lastName].filter(Boolean).join(" "),
-            title: user.bio || user.email,
-            image: user.avatarUrl || "/images/profile.png",
-            isFollowing: false,
-          }))
-      );
-    } catch (error) {
-      setSuggestedPeople([]);
-      console.error("Failed to load suggested people", error);
-    } finally {
-      setLoadingPeople(false);
-    }
-  };
+  const dispatch = useDispatch();
+  const suggestedPeople = useSelector((state) => state.users.suggestedPeople);
+  const loadingPeople = useSelector((state) => state.users.suggestedLoading);
+  const followLoadingId = useSelector((state) => state.users.followLoadingId);
 
   useEffect(() => {
-    loadSuggestedPeople();
-  }, []);
+    dispatch(fetchSuggestedPeople());
+  }, [dispatch]);
 
   const hasPeople = useMemo(
     () => suggestedPeople.length > 0,
@@ -193,24 +170,8 @@ function LeftSidebar() {
   );
   const shouldShowSuggestedSection = loadingPeople || hasPeople;
 
-  const handleToggleFollow = async (userId) => {
-    try {
-      setFollowLoadingId(userId);
-      const response = await POST(ENDPOINT.USERS.TOGGLE_FOLLOW(userId));
-      const action = response?.data?.data?.action;
-
-      setSuggestedPeople((prev) => {
-        if (action === "followed") {
-          return prev.filter((person) => person.id !== userId);
-        }
-
-        return prev;
-      });
-    } catch (error) {
-      console.error("Failed to toggle follow", error);
-    } finally {
-      setFollowLoadingId(null);
-    }
+  const handleToggleFollow = (userId) => {
+    dispatch(toggleFollow(userId));
   };
 
   return (
@@ -262,10 +223,9 @@ function LeftSidebar() {
                 >
                   <div className="flex items-center gap-2">
                     <div className="h-11 w-11 shrink-0">
-                      {person.image &&
-                      person.image !== "/images/profile.png" ? (
+                      {person.avatarUrl ? (
                         <img
-                          src={person.image}
+                          src={person.avatarUrl}
                           alt={person.name}
                           className="h-11 w-11 rounded-full object-cover"
                           loading="lazy"
@@ -281,7 +241,7 @@ function LeftSidebar() {
                         {person.name}
                       </p>
                       <p className="truncate text-xs text-[#7c889d]">
-                        {person.title}
+                        {person.bio || person.email}
                       </p>
                     </div>
                   </div>
