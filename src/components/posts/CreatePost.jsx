@@ -11,6 +11,8 @@ import {
   Send,
   X,
   User2,
+  Globe,
+  Lock,
 } from "lucide-react";
 import { createPost } from "../../features/posts/postsAPI";
 
@@ -25,9 +27,10 @@ function CreatePost() {
 
   const [selectedFiles, setSelectedFiles] = useState([]); // { file, preview }[]
   const fileInputRef = useRef(null);
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit, reset, watch, setValue } = useForm({
     defaultValues: { content: "", visibility: "PUBLIC" },
   });
+  const visibility = watch("visibility");
 
   const addImages = (fileList) => {
     const incoming = Array.from(fileList).filter((f) =>
@@ -202,18 +205,41 @@ function CreatePost() {
             </button>
           </div>
 
-          {/* Hidden file input — multiple */}
-          <input
-            type="file"
-            accept={ACCEPTED.join(",")}
-            multiple
-            className="hidden"
-            ref={fileInputRef}
-            onChange={(e) => addImages(e.target.files)}
-          />
-
-          <input type="hidden" value="PUBLIC" {...register("visibility")} />
-
+          <div className="border border-gray-200">
+            {/* Hidden file input — multiple */}
+            <input
+              type="file"
+              accept={ACCEPTED.join(",")}
+              multiple
+              className="hidden"
+              ref={fileInputRef}
+              onChange={(e) => addImages(e.target.files)}
+            />
+            {/* Visibility toggle */}
+            <button
+              type="button"
+              onClick={() =>
+                setValue(
+                  "visibility",
+                  visibility === "PUBLIC" ? "PRIVATE" : "PUBLIC"
+                )
+              }
+              className={`flex items-center gap-1 px-2 py-1.5 text-xs font-medium transition sm:gap-1.5 sm:px-3 sm:py-2 ${
+                visibility === "PRIVATE"
+                  ? "bg-yellow-50 text-yellow-700 hover:bg-yellow-100"
+                  : "text-[#4c5a71] hover:bg-[#f3f7ff]"
+              }`}
+            >
+              {visibility === "PRIVATE" ? (
+                <Lock size={14} className="shrink-0" />
+              ) : (
+                <Globe size={14} className="shrink-0" />
+              )}
+              <span className="hidden sm:inline">
+                {visibility === "PRIVATE" ? "Only Me" : "Public"}
+              </span>
+            </button>
+          </div>
           <button
             type="submit"
             disabled={creating}
@@ -224,6 +250,8 @@ function CreatePost() {
               {creating ? "Posting..." : "Post"}
             </span>
           </button>
+          {/* hidden field keeps react-hook-form in sync with the toggle */}
+          <input type="hidden" {...register("visibility")} />
         </div>
       </form>
     </section>

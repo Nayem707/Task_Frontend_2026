@@ -1,4 +1,4 @@
-import { memo, useState, useEffect } from "react";
+import { memo, useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -13,9 +13,14 @@ import {
   Share2,
   ThumbsUp,
   Globe,
+  Lock,
   User2,
 } from "lucide-react";
-import { deletePost, togglePostLike } from "../../features/posts/postsAPI";
+import {
+  deletePost,
+  togglePostLike,
+  updatePost,
+} from "../../features/posts/postsAPI";
 import { patchPostLikeOptimistic } from "../../features/posts/postsSlice";
 import { fetchLikesList } from "../../features/likes/likesAPI";
 import { formatDateTime } from "../../utils/helpers";
@@ -25,14 +30,54 @@ import LikesList from "../likes/LikesList";
 
 function PostCard({ post }) {
   const dispatch = useDispatch();
+  const authUser = useSelector((state) => state.auth.user);
+  const isOwner = authUser?.id === post.author?.id;
   const [likesOpen, setLikesOpen] = useState(false);
   const [dropOpen, setDropOpen] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
+  const [visibilityLoading, setVisibilityLoading] = useState(false);
+  const dropId = useRef(`drop-${post.id}`);
+
+  // Close this dropdown when another post's dropdown opens
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.detail !== dropId.current) setDropOpen(false);
+    };
+    window.addEventListener("postdrop:open", handler);
+    return () => window.removeEventListener("postdrop:open", handler);
+  }, []);
+
+  const toggleDrop = () => {
+    setDropOpen((v) => {
+      if (!v) window.dispatchEvent(new CustomEvent("postdrop:open", { detail: dropId.current }));
+      return !v;
+    });
+  };
   const key = `post:${post.id}`;
   const likesUsers = useSelector(
     (state) => state.likes.likesByEntity[key] ?? EMPTY_ARRAY
   );
   const likesLoading = useSelector((state) => state.likes.loading);
+
+  const handleToggleVisibility = async () => {
+    const newVisibility = post.visibility === "PUBLIC" ? "PRIVATE" : "PUBLIC";
+    setVisibilityLoading(true);
+    setDropOpen(false);
+    try {
+      await dispatch(
+        updatePost({ postId: post.id, visibility: newVisibility })
+      ).unwrap();
+      toast.success(
+        newVisibility === "PRIVATE"
+          ? "Post set to Only Me"
+          : "Post set to Public"
+      );
+    } catch {
+      toast.error("Could not change visibility");
+    } finally {
+      setVisibilityLoading(false);
+    }
+  };
   const imageUrls =
     post.images?.length > 0
       ? post.images
@@ -57,12 +102,6 @@ function PostCard({ post }) {
       toast.error("Could not update like");
     }
   };
-
-  useEffect(() => {
-    if (post.likesCount > 0) {
-      dispatch(fetchLikesList({ entityType: "post", entityId: post.id }));
-    }
-  }, [dispatch, post.id, post.likesCount]);
 
   const handleOpenLikes = async () => {
     setLikesOpen(true);
@@ -117,14 +156,9 @@ function PostCard({ post }) {
                     <Globe size={12} className="mr-1" />
                     Public
                   </span>
-                ) : post.visibility === "PRIVATE" ? (
-                  <span className="flex items-center">
-                    <Lock size={12} className="mr-1" />
-                    Friends
-                  </span>
                 ) : (
                   <span className="flex items-center">
-                    <EyeOff size={12} className="mr-1" />
+                    <Lock size={12} className="mr-1" />
                     Only Me
                   </span>
                 )}
@@ -137,7 +171,7 @@ function PostCard({ post }) {
         <div className="relative">
           <button
             type="button"
-            onClick={() => setDropOpen((v) => !v)}
+            onClick={() => toggleDrop()}
             className="rounded-lg p-1 hover:bg-[#f3f6fb]"
           >
             <MoreVertical size={18} className="text-[#C4C4C4]" />
@@ -145,36 +179,60 @@ function PostCard({ post }) {
           {dropOpen && (
             <div className="absolute top-full right-0 z-20 mt-1 w-44 rounded-xl border border-[#e7edf8] bg-white shadow-lg">
               <ul className="py-1">
-                <li>
-                  <button
-                    type="button"
-                    className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-[#4c5a71] hover:bg-[#f5f7fb]"
-                  >
-                    <Bookmark size={18} className="text-[#1890FF]" />
-                    Save Post
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-[#4c5a71] hover:bg-[#f5f7fb]"
-                  >
-                    <EyeOff size={18} className="text-[#1890FF]" />
-                    Hide
-                  </button>
-                </li>
-                {post.isOwner ? (
-                  <li>
-                    <button
-                      type="button"
-                      onClick={handleDelete}
-                      className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-red-500 hover:bg-[#fff5f5]"
-                    >
-                      <Trash2 size={18} className="text-red-500" />
-                      Delete Post
-                    </button>
-                  </li>
-                ) : null}
+                {isOwner ? (
+                  <>
+                    <li>
+                      <button
+                        type="button"
+                        onClick={handleToggleVisibility}
+                        disabled={visibilityLoading}
+                        className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-[#4c5a71] hover:bg-[#f5f7fb] disabled:opacity-50"
+                      >
+                        {post.visibility === "PUBLIC" ? (
+                          <Lock size={18} className="text-[#1890FF]" />
+                        ) : (
+                          <Globe size={18} className="text-[#1890FF]" />
+                        )}
+                        {visibilityLoading
+                          ? "Saving..."
+                          : post.visibility === "PUBLIC"
+                            ? "Set to Only Me"
+                            : "Set to Public"}
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        type="button"
+                        onClick={handleDelete}
+                        className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-red-500 hover:bg-[#fff5f5]"
+                      >
+                        <Trash2 size={18} className="text-red-500" />
+                        Delete Post
+                      </button>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <button
+                        type="button"
+                        className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-[#4c5a71] hover:bg-[#f5f7fb]"
+                      >
+                        <Bookmark size={18} className="text-[#1890FF]" />
+                        Save Post
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        type="button"
+                        className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-[#4c5a71] hover:bg-[#f5f7fb]"
+                      >
+                        <EyeOff size={18} className="text-[#1890FF]" />
+                        Hide
+                      </button>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
           )}
