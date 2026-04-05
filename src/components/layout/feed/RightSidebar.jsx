@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFollowing, toggleFollow } from "../../../features/users/usersAPI";
 import { UserMinus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const RightSidebar = () => {
   const dispatch = useDispatch();
@@ -138,9 +139,13 @@ const RightSidebar = () => {
                   </div>
 
                   <div className="max-w-[100px] min-w-0">
-                    <p className="truncate text-sm font-semibold text-[#112032]">
+                    <Link
+                      to={`/profile/${person.id}`}
+                      className="truncate text-sm font-semibold text-[#112032] hover:underline"
+                    >
                       {person.name}
-                    </p>
+                    </Link>
+
                     <p className="truncate text-xs text-[#738098]">
                       {person.bio || person.email}
                     </p>
